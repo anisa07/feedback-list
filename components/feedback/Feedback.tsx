@@ -1,28 +1,30 @@
 import {FeedbackType} from "../../types/FeedbackType";
 import {Vote} from "./vote/Vote";
+import {Box, Flex, Heading, Text} from "@chakra-ui/react";
+import {colors} from "../../styles/colors";
 
 interface FeedbackProps {
     feedback: FeedbackType
 }
 
 export const Feedback = (props: FeedbackProps) => {
-    return <div className="bg-white rounded mb-3 p-5 flex">
-        <div className="basis-1/5 flex items-center justify-center">
+    return <Flex backgroundColor="white" borderRadius="5px" mb="1rem" p="1rem">
+        <Flex alignItems="center" justifyContent="center" flex="1">
             <Vote voteData={props.feedback.vote}/>
-        </div>
-        <div className="basis-4/5">
-            <h4 className="font-semibold">
+        </Flex>
+        <Box flex="2">
+            <Heading as="h4" size="sm" fontWeight="semibold">
                 {props.feedback.title}
-            </h4>
-            <p className="text-darkgray my-2">
+            </Heading>
+            <Text color={colors.darkgray} my="0.5rem">
                 {props.feedback.detail}
-            </p>
-            <span className="bg-lightbluegray text-blue rounded-xl px-3 py-1 font-semibold inline-block">
-                {props.feedback.category.category}
-            </span>
-        </div>
-        <div className="basis-1/5 font-semibold text-darkgray self-center justify-center">
+            </Text>
+            <Text display="inline-block" backgroundColor={colors.lightbluegray} color="blue.600" borderRadius='25px' p="0.25rem 0.7rem" fontWeight="semibold">
+                {props.feedback.type.type}
+            </Text>
+        </Box>
+        <Box flex="1" fontWeight="semibold" color={colors.darkgray} alignSelf="center" justifyContent="center">
             {props.feedback.comments.length}
-        </div>
-    </div>
+        </Box>
+    </Flex>
 }

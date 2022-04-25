@@ -6,53 +6,50 @@
     "authorId": "69b09a6f-2299-4b38-85ac-8fe8e46467b9",
     "commentIds": ["730eacef-3652-4857-b9f4-efe481a90763", "784bc396-6ee3-4325-8ea3-eb28da402893"],
     "statusId": "1dbe369d-c9f2-4257-8edf-56cdc9507580",
-    "categoryId": "89109355-c2ae-4395-88d3-bdf8d88d6fad",
+    "typeId": "89109355-c2ae-4395-88d3-bdf8d88d6fad",
     "vote": {
       "voteDown": ["92813172-c9e4-4087-8d82-b1f316101464"],
       "voteUp": ["9dd1a809-5bce-401e-accb-07b7f6808c11", "8d0e5ed5-f796-49bb-a738-1043ad22b4a7"]
     }
   }],
-  "roadmaps": [
+  "statuses": [
     {
       "id": "1dbe369d-c9f2-4257-8edf-56cdc9507580",
-      "status": "PLANNED",
-      "value": 1
+      "status": "PLANNED"
     },
     {
       "id": "5ccd4b70-7f5c-478e-bbaf-070da9f76092",
-      "status": "IN_PROGRESS",
-      "value": 0
+      "status": "IN_PROGRESS"
     },
     {
       "id": "3a4f7ac0-32ee-44b0-b4cb-b558724fe184",
-      "status": "LIVE",
-      "value": 0
+      "status": "LIVE"
     }
   ],
-  "category": [
+  "types": [
     {
       "id": "89109355-c2ae-4395-88d3-bdf8d88d6fad",
-      "category": "Enhancement"
+      "type": "Enhancement"
     },
     {
       "id": "7670a08b-23f8-4117-8c20-62162a4e18a2",
-      "category": "Bug"
+      "type": "Bug"
     },
     {
       "id": "24dd9ff9-2f4f-40cb-84f8-d1bb13dca019",
-      "category": "Feature"
+      "type": "Feature"
     },
     {
       "id": "cc715f42-1c8f-42b8-b938-3fda2b7057fd",
-      "category": "UI"
+      "type": "UI"
     },
     {
       "id": "753f6923-043d-4ca7-bc25-7c5c254a4352",
-      "category": "UX"
+      "type": "UX"
     },
     {
       "id": "5bc69980-0fd2-435b-b84b-62e2f77ad572",
-      "category": "All"
+      "type": "All"
     }
   ],
   "comments": [{

@@ -1,4 +1,6 @@
 import {SortFeedback} from "../feedbackList/sortFeedback/SortFeedback";
+import {Button, Flex, Heading} from "@chakra-ui/react";
+import {colors} from "../../styles/colors";
 
 interface HeaderProps {
     title: string;
@@ -6,16 +8,16 @@ interface HeaderProps {
 
 export const Header = (props: HeaderProps) => {
     return (
-        <header className="md:rounded p-5 bg-darkgrayblue text-white flex justify-between items-center mb-3">
-            <div className="flex justify-between items-center">
-                <h3 className="font-bold mr-5">
+        <Flex borderRadius={{md: "5px"}} backgroundColor="blue.800" mb="1.3rem" p="1rem" color="white" justifyContent="space-between" alignItems="center">
+            <Flex justifyContent="space-between" alignItems="center">
+                <Heading as="h3" size="sm" fontWeight="bold" mr="1rem">
                     {props.title}
-                </h3>
+                </Heading>
                 <SortFeedback sortItems={["Most Upvotes", "Most Discussed", "Less Upvotes", "Less Discussed"]} onSort={(i:string)=>{}}/>
-            </div>
-            <button className="text-white bg-fuchsia rounded py-2 px-3 font-semibold">
+            </Flex>
+            <Button color="white" backgroundColor={colors.fuchsia} borderRadius="5px" py="1rem" px="1.3rem" fontWeight="semibold">
                 + Add Feedback
-            </button>
-        </header>
+            </Button>
+        </Flex>
     )
 }

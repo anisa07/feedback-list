@@ -1,4 +1,8 @@
-import {RoadmapEnum} from "./RoadmapType";
+export enum StatusEnum {
+    PLANNED = "PLANNED",
+    IN_PROGRESS = "IN_PROGRESS",
+    LIVE = "LIVE"
+}
 
 export interface FeedbackType {
     id: string,
@@ -7,7 +11,7 @@ export interface FeedbackType {
     vote: VoteType,
     author: AuthorType,
     comments: CommentType[],
-    category: CategoryType,
+    type: Type,
     status: StatusType
 }
 
@@ -24,14 +28,20 @@ export interface CommentType {
     author: AuthorType,
 }
 
-export interface CategoryType {
+export interface Type {
     id: string,
-    category: string
+    type: string
 }
 
 export interface StatusType {
     id: string,
-    status: RoadmapEnum
+    status: StatusEnum
+}
+
+export interface RoadmapType {
+    id: string,
+    status: StatusEnum,
+    quantity: number
 }
 
 export interface VoteType {

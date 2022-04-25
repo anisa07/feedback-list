@@ -1,4 +1,5 @@
 import {FilterType} from "../../../types/FilterType";
+import {Box} from "@chakra-ui/react";
 
 interface FilterProps {
     filters: FilterType[],
@@ -7,13 +8,45 @@ interface FilterProps {
 
 export const Filter = (props: FilterProps) => {
     const colorClass = (item: FilterType) => {
-        return item.selected ? `bg-blue text-white` : `bg-lightbluegray text-blue`
+        return item.selected ? `white` : `blue.600`
+    }
+    const bgClass = (item: FilterType) => {
+        return item.selected ? `blue.600` : `white`
     }
     return (
-        <div className="hidden md:flex lg:flex p-5 lg:mr-0 md:mb-3 md:mr-3 bg-white rounded flex-wrap items-start">
+        <Box
+            display={{
+                base: "none",
+                md: "flex"
+            }}
+            p="1rem"
+            mr={{
+                md: '1.5rem',
+                lg: 0
+            }}
+            mb={{
+                md: '1.5rem',
+            }}
+            backgroundColor='white'
+            borderRadius="5px"
+            alignItems="start"
+            flexWrap="wrap"
+            flex={{
+                base: 1
+            }}
+        >
             {props.filters.map(item => (
-                <div key={item.id} className={`px-3 py-1 m-1 rounded-xl font-semibold ${colorClass(item)}`}>{item.filter}</div>
+                <Box key={item.id}
+                     p="0.25rem 0.7rem"
+                     mr="0.25rem"
+                     borderRadius='25px'
+                     fontWeight="semibold"
+                     color={colorClass(item)}
+                     backgroundColor={bgClass(item)}
+                >
+                    {item.type}
+                </Box>
             ))}
-        </div>
+        </Box>
     )
 }

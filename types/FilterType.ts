@@ -1,6 +1,6 @@
 
 export interface FilterType {
-    filter: string,
+    type: string,
     id: string,
     selected: boolean
 }
