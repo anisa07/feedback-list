@@ -3,7 +3,7 @@ import {Box} from "@chakra-ui/react";
 
 interface FilterProps {
     filters: FilterType[],
-    onSelect: (f: FilterType) => void
+    onSelect: (id: string) => void
 }
 
 export const Filter = (props: FilterProps) => {
@@ -13,6 +13,10 @@ export const Filter = (props: FilterProps) => {
     const bgClass = (item: FilterType) => {
         return item.selected ? `blue.600` : `white`
     }
+    const handleClick = (id: string) => {
+        props.onSelect(id);
+    }
+
     return (
         <Box
             display={{
@@ -37,12 +41,14 @@ export const Filter = (props: FilterProps) => {
         >
             {props.filters.map(item => (
                 <Box key={item.id}
+                     cursor="pointer"
                      p="0.25rem 0.7rem"
                      mr="0.25rem"
                      borderRadius='25px'
                      fontWeight="semibold"
                      color={colorClass(item)}
                      backgroundColor={bgClass(item)}
+                     onClick={() => {handleClick(item.id)}}
                 >
                     {item.type}
                 </Box>

@@ -1,21 +1,21 @@
-import {SyntheticEvent} from "react";
+import {ChangeEvent, SyntheticEvent} from "react";
 import {Box, Select, Text} from "@chakra-ui/react";
+import {SortType} from "../../../types/SortType";
 
 interface SortFeedbackProps {
     sortItems: string[],
-    onSort: (sortItem: string) => void
+    onSort: (sortItem: SortType) => void
 }
 
 export const SortFeedback = (props: SortFeedbackProps) => {
-    const handleSelect = (e: SyntheticEvent) => {
-        console.log(e)
-        // props.onSort(e.target.value);
+    const handleSelect = (e: ChangeEvent<HTMLSelectElement>) => {
+        props.onSort(e.target.value as SortType);
     }
 
     return (
         <Box>
             <Text fontSize="12px" px="1rem">Sort by : </Text>
-            <Select fontSize="14px" outline="none" fontWeight="semibold" border="none" onSelect={handleSelect}>
+            <Select placeholder='Sort feedbacks' fontSize="14px" outline="none" fontWeight="semibold" border="none" onChange={handleSelect}>
                 {props.sortItems.map(item => (
                     <option key={item}>
                         {item}

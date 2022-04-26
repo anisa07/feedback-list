@@ -6,19 +6,34 @@ import {RoadmapPreview} from "../components/feedbackList/roadmapPreview/RoadmapP
 import {Header} from "../components/header/Header";
 import {FeedbackList} from "../components/feedbackList/FeedbackList";
 import {FeedbackType, RoadmapType, Type} from "../types/FeedbackType";
-import {getHomePageData, getTypes} from "../services/feedbackService";
+import {
+    getAllFeedbackList,
+    getFeedbackListByType,
+    getFeedbacksByTypeId,
+    getHomePageData,
+    getTypes
+} from "../services/feedbackService";
 import {useEffect, useState} from "react";
 import {FilterType} from "../types/FilterType";
-
+import {SortType} from "../types/SortType";
+import {sortBy} from "../helpers/feedbackHelper";
 
 interface HomeProps {
-    feedbackList: FeedbackType[],
     types: Type[],
-    roadmap: RoadmapType[]
+    roadmap: RoadmapType[],
+    feedbackList: FeedbackType[]
 }
 
-const Home: NextPage<HomeProps> = ({feedbackList, types, roadmap}) => {
+const Home: NextPage<HomeProps> = ({types, roadmap, feedbackList}) => {
     const [filters, setFilters] = useState<FilterType[]>([]);
+    const [sortedFeedbacks, setSortedFeedbacks] = useState<FeedbackType[]>([]);
+    const [selectedType, setSelectedType] = useState<SortType>("" as SortType);
+
+    useEffect(() => {
+        if (feedbackList) {
+            setSortedFeedbacks(sortBy(feedbackList, selectedType))
+        }
+    }, [feedbackList])
 
     useEffect(() => {
         if (types) {
@@ -29,43 +44,59 @@ const Home: NextPage<HomeProps> = ({feedbackList, types, roadmap}) => {
             }
             setFilters(newFilters);
         }
-    }, [types])
+    }, [types]);
+
+    function prepareFilters(id: string) {
+        const newFilters: FilterType[] = [];
+        for (let item of filters) {
+            newFilters.push({id: item.id, type: item.type, selected: item.id === id});
+        }
+        return newFilters;
+    }
+
+    const handleFilter = (id: string) => {
+        const newFilters = prepareFilters(id);
+        setFilters(newFilters);
+        
+        if (newFilters[0].id === id) {
+            getAllFeedbackList().then(feedbacks => {
+                setSortedFeedbacks(sortBy(feedbacks, selectedType));
+            })
+        }
+
+        getFeedbackListByType(id).then(feedbacks => {
+            setSortedFeedbacks(sortBy(feedbacks, selectedType));
+        })
+    }
+
+    const handleSort = (s: SortType) => {
+        setSelectedType(s);
+        setSortedFeedbacks(sortBy(feedbackList, s));
+    }
 
     return (
-        <Flex direction={{
-            base: 'column',
-            lg: 'row'
-        }}>
+        <Flex direction={{ base: 'column', lg: 'row' }}>
             <Flex
-                width={{
-                    base: "unset",
-                    lg: "20rem"
-                }}
-                p={{
-                    base: 0,
-                    md: '1.5rem 1.5rem 0'
-                }}
-                direction={{
-                    base: 'row',
-                    lg: 'column'
-                }}>
+                width={{ base: "unset", lg: "20rem"}}
+                p={{ base: 0, md: '1.5rem 1.5rem 0' }}
+                direction={{ base: 'row', lg: 'column'}}>
                 <Logo title="Frontend Mentor" text="Feedback Board"/>
                 <Filter
                     filters={filters}
-                    onSelect={() => {}}
+                    onSelect={handleFilter}
                 />
                 <RoadmapPreview
                     roadmap={roadmap}
                 />
             </Flex>
             <Box
-                p={{
-                    base: 0,
-                    md: '1.5rem'
-                }}
+                p={{ base: 0, md: '1.5rem' }}
                 flex='1'>
-                <Header title={`${feedbackList ? feedbackList.length : 0} Suggestions`} />
-                <FeedbackList feedbackList={feedbackList} />
+                <Header
+                    showSort={true}
+                    title={`${sortedFeedbacks ? sortedFeedbacks.length : 0} Suggestions`}
+                    onSort={handleSort} />
+                <FeedbackList feedbackList={sortedFeedbacks} />
             </Box>
         </Flex>
     )
@@ -74,7 +105,14 @@ const Home: NextPage<HomeProps> = ({feedbackList, types, roadmap}) => {
 export const getServerSideProps: GetStaticProps<HomeProps> = async () => {
     const data = await getHomePageData();
     const types = await getTypes();
-    return { props: { feedbackList: data.feedbackList, types, roadmap: data.roadmap } }
+
+    return {
+        props: {
+            types,
+            roadmap: data.roadmap,
+            feedbackList: data.feedbackList
+        }
+    }
 }
 
 export default Home
