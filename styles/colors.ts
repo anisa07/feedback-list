@@ -10,5 +10,5 @@ export const colors = {
     'violet': '#7C5CF4',
     'fuchsia': '#AE1FEB',
     'raspberry': '#C749B4',
-    'salmon': '#E77686'
+    'salmon': '#FA8072'
 }

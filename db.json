@@ -15,15 +15,18 @@
   "statuses": [
     {
       "id": "1dbe369d-c9f2-4257-8edf-56cdc9507580",
-      "status": "PLANNED"
+      "status": "Planned",
+      "description": ""
     },
     {
       "id": "5ccd4b70-7f5c-478e-bbaf-070da9f76092",
-      "status": "IN_PROGRESS"
+      "status": "InProgress",
+      "description": ""
     },
     {
       "id": "3a4f7ac0-32ee-44b0-b4cb-b558724fe184",
-      "status": "LIVE"
+      "status": "Live",
+      "description": ""
     }
   ],
   "types": [

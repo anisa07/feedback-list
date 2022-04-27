@@ -36,7 +36,7 @@ export const RoadmapPreview = (props: RoadmapPreviewProps) => {
         >
             <Flex justifyContent="space-between" alignItems="center">
                 <Text fontWeight="semibold">Roadmap</Text>
-                <Link textDecoration='underline' fontSize="12px" color="blue.600">View</Link>
+                <Link textDecoration='underline' fontSize="12px" color="blue.600" href="/roadmap">View</Link>
             </Flex>
         {props.roadmap.map(item => (
             <Flex key={item.status} justifyContent="space-between" alignItems="center" color="gray.600">

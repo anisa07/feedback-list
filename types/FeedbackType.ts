@@ -1,7 +1,7 @@
 export enum StatusEnum {
-    PLANNED = "PLANNED",
-    IN_PROGRESS = "IN_PROGRESS",
-    LIVE = "LIVE"
+    PLANNED = "Planned",
+    IN_PROGRESS = "InProgress",
+    LIVE = "Live"
 }
 
 export interface FeedbackType {
@@ -41,6 +41,7 @@ export interface StatusType {
 export interface RoadmapType {
     id: string,
     status: StatusEnum,
+    description: string,
     quantity: number
 }
 

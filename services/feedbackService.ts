@@ -29,7 +29,7 @@ export const getStatus = (id: string) => fetch(`${urlApi}/statuses/${id}`)
 export const getType = (id: string) => fetch(`${urlApi}/types/${id}`)
     .then((response) => response.json());
 
-// Todo fix types
+// TODO fix types
 async function fillFeedbackList(response: any[]) {
     const feedbackList: FeedbackType[] = [];
 
@@ -54,8 +54,8 @@ async function fillFeedbackList(response: any[]) {
     return feedbackList;
 }
 
-export const getHomePageData = async (): Promise<{feedbackList: FeedbackType[], roadmap: RoadmapType[]}> => {
-    const response = await getFeedbacks();
+// TODO fix response type from any to FeedbackResponseType
+async function getRoadmapData(response: any) {
     const statuses = await getStatuses();
     const roadmap: Record<string, RoadmapType> = {
         [StatusEnum.PLANNED]: {} as RoadmapType,
@@ -71,8 +71,14 @@ export const getHomePageData = async (): Promise<{feedbackList: FeedbackType[], 
         roadmap[status.status].quantity += 1;
     }
 
+    return  [roadmap[StatusEnum.PLANNED], roadmap[StatusEnum.IN_PROGRESS], roadmap[StatusEnum.LIVE]]
+}
+
+export const getPageData = async (): Promise<{feedbackList: FeedbackType[], roadmap: RoadmapType[]}> => {
+    const response = await getFeedbacks();
+
     return {
-        roadmap: [roadmap[StatusEnum.PLANNED], roadmap[StatusEnum.IN_PROGRESS], roadmap[StatusEnum.LIVE]],
+        roadmap: await getRoadmapData(response),
         feedbackList: await fillFeedbackList(response)
     };
 }
@@ -81,7 +87,6 @@ export const getAllFeedbackList = async () => {
     const response = await getFeedbacks();
     return await fillFeedbackList(response);
 }
-
 
 export const getFeedbackListByType = async (id: string) => {
     const response = await getFeedbacksByTypeId(id);

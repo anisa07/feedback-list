@@ -1,5 +1,5 @@
 import type {GetStaticProps, NextPage} from 'next'
-import {Box, Flex} from '@chakra-ui/react'
+import {Box, Flex, useMediaQuery} from '@chakra-ui/react'
 import {Logo} from "../components/feedbackList/logo/Logo";
 import {Filter} from "../components/feedbackList/filter/Filter";
 import {RoadmapPreview} from "../components/feedbackList/roadmapPreview/RoadmapPreview";
@@ -9,14 +9,15 @@ import {FeedbackType, RoadmapType, Type} from "../types/FeedbackType";
 import {
     getAllFeedbackList,
     getFeedbackListByType,
-    getFeedbacksByTypeId,
-    getHomePageData,
+    getPageData,
     getTypes
 } from "../services/feedbackService";
 import {useEffect, useState} from "react";
 import {FilterType} from "../types/FilterType";
 import {SortType} from "../types/SortType";
 import {sortBy} from "../helpers/feedbackHelper";
+import {useWindowSize} from "../hooks/useWindowSize";
+import {breakpoints} from "../styles/screenSizes";
 
 interface HomeProps {
     types: Type[],
@@ -25,6 +26,7 @@ interface HomeProps {
 }
 
 const Home: NextPage<HomeProps> = ({types, roadmap, feedbackList}) => {
+    const [isLargerThanMd] = useMediaQuery(`(min-width: ${breakpoints.md})`);
     const [filters, setFilters] = useState<FilterType[]>([]);
     const [sortedFeedbacks, setSortedFeedbacks] = useState<FeedbackType[]>([]);
     const [selectedType, setSelectedType] = useState<SortType>("" as SortType);
@@ -57,13 +59,11 @@ const Home: NextPage<HomeProps> = ({types, roadmap, feedbackList}) => {
     const handleFilter = (id: string) => {
         const newFilters = prepareFilters(id);
         setFilters(newFilters);
-        
         if (newFilters[0].id === id) {
             getAllFeedbackList().then(feedbacks => {
                 setSortedFeedbacks(sortBy(feedbacks, selectedType));
             })
         }
-
         getFeedbackListByType(id).then(feedbacks => {
             setSortedFeedbacks(sortBy(feedbacks, selectedType));
         })
@@ -93,6 +93,8 @@ const Home: NextPage<HomeProps> = ({types, roadmap, feedbackList}) => {
                 p={{ base: 0, md: '1.5rem' }}
                 flex='1'>
                 <Header
+                    showTitle={isLargerThanMd}
+                    showNav={false}
                     showSort={true}
                     title={`${sortedFeedbacks ? sortedFeedbacks.length : 0} Suggestions`}
                     onSort={handleSort} />
@@ -103,7 +105,7 @@ const Home: NextPage<HomeProps> = ({types, roadmap, feedbackList}) => {
 };
 
 export const getServerSideProps: GetStaticProps<HomeProps> = async () => {
-    const data = await getHomePageData();
+    const data = await getPageData();
     const types = await getTypes();
 
     return {
