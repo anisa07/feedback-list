@@ -53,7 +53,7 @@ export function useFormCustomHook(formData: FormData) {
 
             setForm({ ...form, [name]: inputObj });
         },
-        [form, validateField]
+        [form, validateField, errorsMap]
     );
 
     const isValid = useCallback(() => {
@@ -61,7 +61,7 @@ export function useFormCustomHook(formData: FormData) {
     }, [errorsMap]);
 
     const resetFormData = (data: FormData) => {
-        setForm(formData);
+        setForm(data);
         fillErrorsMap(data);
     };
 

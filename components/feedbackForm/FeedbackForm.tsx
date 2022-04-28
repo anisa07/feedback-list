@@ -1,4 +1,4 @@
-import {FeedbackType} from "../../types/FeedbackType";
+import {FeedbackType, StatusEnum} from "../../types/FeedbackType";
 import {Flex, Button, Heading} from "@chakra-ui/react";
 import {colors} from "../../styles/colors";
 import {TextField} from "../formFields/TextField";
@@ -10,6 +10,7 @@ import {useFormCustomHook} from "../../hooks/useFormHook";
 import {FormData} from "../../types/ValidationTypes";
 import {ensureNotEmpty} from "../../hooks/validationRules";
 import {useEffect} from "react";
+import {saveFeedback} from "../../services/feedbackService";
 
 interface FeedbackFormProps {
     feedback?: FeedbackType,
@@ -57,6 +58,38 @@ export const FeedbackForm = (props: FeedbackFormProps) => {
 
     const goBack = () => router.back();
 
+    const handleSaveFeedback = async () => {
+        const feedbackToSave: FeedbackType = {
+            id: props.feedback?.id || "",
+            title: form.title.value,
+            detail: form.description.value,
+            vote: props.feedback?.vote || {
+                voteDown: [],
+                voteUp: []
+            },
+            // TODO get actual author; implement
+            author: {
+                "id": "9dd1a809-5bce-401e-accb-07b7f6808c11",
+                "name": "",
+                "email": "",
+                "img": "",
+            },
+            comments: props.feedback?.comments || [],
+            type: {
+                id: form.category.value,
+                type: ""
+            },
+            status: props.feedback?.status || {id: "", status: "" as StatusEnum}
+        };
+        try {
+            await saveFeedback(feedbackToSave);
+            goBack();
+        } catch (e) {
+            // TODO implement behavior, notification?
+            console.error("Cannot save feedback")
+        }
+    };
+
     return <form>
         <Heading color={colors.darkgrayblue} as='h3' size='lg' mb={{base: "1rem", md: "2rem"}}>
             {feedbackFormTitle()}
@@ -89,7 +122,7 @@ export const FeedbackForm = (props: FeedbackFormProps) => {
                 Cancel
             </Button>
             <Button disabled={!isValid()} color="white" backgroundColor={colors.fuchsia} size='md'
-                    fontWeight="semibold" onClick={() => {}}>
+                    fontWeight="semibold" onClick={handleSaveFeedback}>
                 {feedbackFormSubmitTitle()}
             </Button>
         </Flex>

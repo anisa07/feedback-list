@@ -29,7 +29,7 @@ export const Feedback = (props: FeedbackProps) => {
                 </Text>
             </Flex>
         </Box>
-        <Text display={{ base: "none", md: "block"}} flex="1" fontWeight="semibold" color={colors.darkgray} alignSelf="center" justifyContent="center">
+        <Text textAlign="center" display={{ base: "none", md: "block"}} flex="1" fontWeight="semibold" color={colors.darkgray} alignSelf="center" justifyContent="center">
             {props.feedback.comments.length}
         </Text>
     </Flex>
