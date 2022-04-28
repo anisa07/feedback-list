@@ -3,15 +3,16 @@ import {ChangeEvent} from "react";
 import {colors} from "../../styles/colors";
 
 export interface FormFieldProps {
+    name: string,
     value: string,
     label: string,
     errorMessage: string,
-    onChange: (v: string) => void
+    onChange: (v: ChangeEvent<HTMLInputElement>) => void
 }
 
 export function TextField(props: FormFieldProps) {
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-        props.onChange(event.target.value);
+        props.onChange(event);
     }
 
     const textColor = () => props.errorMessage ? 'crimson' : colors.darkblue;
@@ -20,6 +21,7 @@ export function TextField(props: FormFieldProps) {
         <Box my="0.75rem">
             <Text fontWeight="semibold" mb='8px' color={textColor()}>{props.label}</Text>
             <Input
+                name={props.name}
                 isInvalid={!!props.errorMessage}
                 size='md'
                 value={props.value}

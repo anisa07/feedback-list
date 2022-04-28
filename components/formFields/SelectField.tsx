@@ -10,7 +10,7 @@ export interface SelectFieldProps extends FormFieldProps {
 
 export function SelectField(props: SelectFieldProps) {
     const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
-        props.onChange(event.target.value);
+        props.onChange(event as unknown as ChangeEvent<HTMLInputElement>);
     }
 
     const textColor = () => props.errorMessage ? 'crimson' : colors.darkblue;
@@ -19,6 +19,7 @@ export function SelectField(props: SelectFieldProps) {
         <Box my="0.75rem">
             <Text fontWeight="semibold" mb='8px' color={textColor()}>{props.label}</Text>
             <Select
+                name={props.name}
                 size='md'
                 color={textColor()}
                 value={props.value}

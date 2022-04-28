@@ -1,17 +1,11 @@
 import {Box, Text, Textarea} from "@chakra-ui/react";
 import {ChangeEvent} from "react";
 import {colors} from "../../styles/colors";
-
-export interface FormFieldProps {
-    value: string,
-    label: string,
-    errorMessage: string,
-    onChange: (v: string) => void
-}
+import {FormFieldProps} from "./TextField";
 
 export function TextAreaField(props: FormFieldProps) {
     const handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-        props.onChange(event.target.value);
+        props.onChange(event as unknown as ChangeEvent<HTMLInputElement>);
     }
 
     const textColor = () => props.errorMessage ? 'crimson' : colors.darkblue;
@@ -20,6 +14,7 @@ export function TextAreaField(props: FormFieldProps) {
         <Box my="0.75rem">
             <Text fontWeight="semibold" mb='8px' color={textColor()}>{props.label}</Text>
             <Textarea
+                name={props.name}
                 rows={7}
                 isInvalid={!!props.errorMessage}
                 size='md'
