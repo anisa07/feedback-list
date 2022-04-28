@@ -1,5 +1,5 @@
-import {Box, Flex, Heading, Text} from "@chakra-ui/react";
-import {FeedbackType, StatusEnum, StatusType} from "../../../types/FeedbackType";
+import {Flex, Heading, Text} from "@chakra-ui/react";
+import {FeedbackType, StatusEnum} from "../../../types/FeedbackType";
 import {colors} from "../../../styles/colors";
 import {Direction, Vote} from "../../feedback/vote/Vote";
 
@@ -26,7 +26,7 @@ export const RoadmapCard = (props: RoadmapCardProps) => {
         my="0.5rem"
         direction="column"
         backgroundColor={colors.white}
-        height="20rem"
+        height="17rem"
         flex="1"
         borderRadius="5px">
         <Flex alignItems="center">
@@ -36,7 +36,7 @@ export const RoadmapCard = (props: RoadmapCardProps) => {
         <Heading as="h4" size="sm" fontWeight="semibold" mt="0.5rem">
             {props.roadmapCard.title}
         </Heading>
-        <Text color={colors.darkgray} my="0.5rem">
+        <Text color={colors.darkgray} my="0.5rem" height="10rem" overflowY="hidden">
             {props.roadmapCard.detail}
         </Text>
         <Text

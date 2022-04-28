@@ -1,7 +1,9 @@
 import {SortFeedback} from "../feedbackList/sortFeedback/SortFeedback";
 import {Box, Button, Flex, Heading, Link} from "@chakra-ui/react";
+import { useRouter } from 'next/router'
 import {colors} from "../../styles/colors";
 import {SortType} from "../../types/SortType";
+import {GoBackLink} from "../goBackLink/GoBackLink";
 
 interface HeaderProps {
     title: string;
@@ -12,10 +14,18 @@ interface HeaderProps {
 }
 
 export const Header = (props: HeaderProps) => {
+    const router = useRouter();
+
+    const goBack = () => router.back();
+
     const handleSort = (s: SortType) => {
         if (props.onSort) {
             props.onSort(s);
         }
+    }
+
+    const handleAddFeedback = () => {
+        router.push('/feedback/create');
     }
 
     return (
@@ -23,9 +33,7 @@ export const Header = (props: HeaderProps) => {
               justifyContent="space-between" alignItems="center">
             <Flex justifyContent="space-between" alignItems="center">
                 <Box>
-                    {props.showNav && <Link fontSize="12px" color="white" href="/" mb='0.5rem' display="inline-block">
-                        {"<"} Go Back
-                    </Link>}
+                    {props.showNav && <GoBackLink color="white" />}
                     {props.showTitle && <Heading as="h3" size="sm" fontWeight="bold" mr="1rem">
                         {props.title}
                     </Heading>}
@@ -36,8 +44,8 @@ export const Header = (props: HeaderProps) => {
                     ]}
                     onSort={handleSort}/>}
             </Flex>
-            <Button color="white" backgroundColor={colors.fuchsia} borderRadius="5px" py="1rem" px="1.3rem"
-                    fontWeight="semibold">
+            <Button color="white" backgroundColor={colors.fuchsia} size='md'
+                    fontWeight="semibold" onClick={handleAddFeedback}>
                 + Add Feedback
             </Button>
         </Flex>

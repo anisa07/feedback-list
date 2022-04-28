@@ -22,9 +22,9 @@ export const Feedback = (props: FeedbackProps) => {
             <Text display="inline-block" backgroundColor={colors.lightbluegray} color="blue.600" borderRadius='25px' p="0.25rem 0.7rem" fontWeight="semibold">
                 {props.feedback.type.type}
             </Text>
-            <Flex alignItems="center" justifyContent="space-between" my="0.5rem">
+            <Flex display={{ base: "flex", md: "none"}}  alignItems="center" justifyContent="space-between" my="0.5rem">
                 <Vote direction={Direction.ROW} voteData={props.feedback.vote}/>
-                <Text display={{ base: "block", md: "none"}} fontWeight="semibold" color={colors.darkgray} alignSelf="center" justifyContent="center">
+                <Text fontWeight="semibold" color={colors.darkgray} alignSelf="center" justifyContent="center">
                     {props.feedback.comments.length}
                 </Text>
             </Flex>
