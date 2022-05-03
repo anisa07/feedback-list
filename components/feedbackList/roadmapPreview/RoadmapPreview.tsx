@@ -31,7 +31,8 @@ export const RoadmapPreview = (props: RoadmapPreviewProps) => {
             backgroundColor='white'
             borderRadius="5px"
             flex={{
-                base: 1
+                base: 1,
+                lg: "unset"
             }}
         >
             <Flex justifyContent="space-between" alignItems="center">

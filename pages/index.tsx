@@ -16,8 +16,8 @@ import {useEffect, useState} from "react";
 import {FilterType} from "../types/FilterType";
 import {SortType} from "../types/SortType";
 import {sortBy} from "../helpers/feedbackHelper";
-import {useWindowSize} from "../hooks/useWindowSize";
 import {breakpoints} from "../styles/screenSizes";
+import {GetServerSideProps} from "next";
 
 interface HomeProps {
     types: Type[],
@@ -104,7 +104,7 @@ const Home: NextPage<HomeProps> = ({types, roadmap, feedbackList}) => {
     )
 };
 
-export const getServerSideProps: GetStaticProps<HomeProps> = async () => {
+export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
     const data = await getPageData();
     const types = await getTypes();
 

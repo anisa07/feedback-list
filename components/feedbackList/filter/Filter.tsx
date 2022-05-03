@@ -36,7 +36,8 @@ export const Filter = (props: FilterProps) => {
             alignItems="start"
             flexWrap="wrap"
             flex={{
-                base: 1
+                base: 1,
+                lg: "unset"
             }}
         >
             {props.filters.map(item => (

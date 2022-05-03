@@ -1,6 +1,6 @@
 import {FeedbackType} from "../../types/FeedbackType";
 import {Direction, Vote} from "./vote/Vote";
-import {Box, Flex, Heading, Text} from "@chakra-ui/react";
+import {Box, Flex, Heading, Link, Text} from "@chakra-ui/react";
 import {colors} from "../../styles/colors";
 
 interface FeedbackProps {
@@ -14,7 +14,7 @@ export const Feedback = (props: FeedbackProps) => {
         </Flex>
         <Box flex="2">
             <Heading as="h4" size="sm" fontWeight="semibold">
-                {props.feedback.title}
+                <Link href={`/feedback/${props.feedback.id}`}>{props.feedback.title}</Link>
             </Heading>
             <Text color={colors.darkgray} my="0.5rem">
                 {props.feedback.detail}

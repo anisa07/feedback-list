@@ -28,7 +28,8 @@ export const Logo = (props: LogoProps) => {
                   md: '1.5rem'
               }}
               flex={{
-                  base: 1
+                  base: 1,
+                  lg: "unset"
               }}
         >
             <Heading as='h1' size='md'>{props.title}</Heading>

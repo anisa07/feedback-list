@@ -1,6 +1,6 @@
 import {Header} from "../components/header/Header";
 import {Box, Flex, Tabs, TabList, TabPanels, Tab, TabPanel, Text} from "@chakra-ui/react";
-import {GetStaticProps, NextPage} from "next";
+import {GetServerSideProps, GetStaticProps, NextPage} from "next";
 import {getPageData} from "../services/feedbackService";
 import {FeedbackType, RoadmapType, StatusEnum} from "../types/FeedbackType";
 import {useEffect, useState} from "react";
@@ -91,12 +91,13 @@ const Roadmap: NextPage<RoadmapProps> = ({roadmap, feedbackList}) => {
             ))}
         </Flex>
 
-        <Flex display={{
+        <Flex
+            display={{
             base: "none",
             md: "flex"
         }}>
             {Object.values(feedbackMap).map(feedbackItem => (
-                <Flex key={feedbackItem.name} flex="1" mt="0.5rem" mr="0.5rem">
+                <Flex key={feedbackItem.name} flexDirection="column" flex="1" mt="0.5rem" mr="0.5rem">
                     {feedbackItem.feedbackList.map(feedback => (
                         <RoadmapCard key={feedback.id} roadmapCard={feedback} name={feedbackItem.name} />
                     ))}
@@ -106,7 +107,7 @@ const Roadmap: NextPage<RoadmapProps> = ({roadmap, feedbackList}) => {
     </Box>
 }
 
-export const getServerSideProps: GetStaticProps<RoadmapProps> = async () => {
+export const getServerSideProps: GetServerSideProps<RoadmapProps> = async () => {
     const data = await getPageData();
 
     return {

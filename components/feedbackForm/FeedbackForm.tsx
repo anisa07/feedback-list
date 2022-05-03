@@ -1,20 +1,26 @@
-import {FeedbackType, StatusEnum} from "../../types/FeedbackType";
+import {FeedbackType, StatusEnum, Type} from "../../types/FeedbackType";
 import {Flex, Button, Heading} from "@chakra-ui/react";
+import { v4 as uuidv4 } from 'uuid';
 import {colors} from "../../styles/colors";
 import {TextField} from "../formFields/TextField";
-import {SelectField} from "../formFields/SelectField";
 import {TextAreaField} from "../formFields/TextAreaField";
-import { CategoryOptions } from "../../pages/feedback/create";
 import {useRouter} from "next/router";
 import {useFormCustomHook} from "../../hooks/useFormHook";
 import {FormData} from "../../types/ValidationTypes";
 import {ensureNotEmpty} from "../../hooks/validationRules";
-import {useEffect} from "react";
-import {saveFeedback} from "../../services/feedbackService";
+import {ChangeEvent, useEffect, useState} from "react";
+import {getTypes, saveFeedback, saveType} from "../../services/feedbackService";
+import { CreatableField } from "../formFields/CreatableField";
+import {InputActionMeta} from "react-select";
+import {UUID_REGEX} from "../../helpers/regexRules";
 
 interface FeedbackFormProps {
     feedback?: FeedbackType,
-    categories: CategoryOptions[]
+}
+
+export interface Options {
+    value: string,
+    label: string
 }
 
 export const FeedbackForm = (props: FeedbackFormProps) => {
@@ -39,6 +45,7 @@ export const FeedbackForm = (props: FeedbackFormProps) => {
         }
     };
     const { onChange, isValid, form, resetFormData } = useFormCustomHook(formData);
+    const [categories, setCategories] = useState<Options[]>([]);
 
     useEffect(() => {
         if (props.feedback) {
@@ -48,7 +55,22 @@ export const FeedbackForm = (props: FeedbackFormProps) => {
             newFormData.category.value = props.feedback.type.id;
             resetFormData(newFormData);
         }
-    }, [props.feedback])
+    }, [props.feedback]);
+
+    const handleUpdateCategoryList = () => {
+        // TODO add return response types
+        getTypes().then((types: Type[]) => {
+            const newCategories: Options[] = types.map(item => ({
+                value: item.id,
+                label: item.type
+            }));
+            setCategories(newCategories);
+        })
+    }
+
+    useEffect(() => {
+        handleUpdateCategoryList();
+    }, []);
 
     const router = useRouter();
 
@@ -90,6 +112,42 @@ export const FeedbackForm = (props: FeedbackFormProps) => {
         }
     };
 
+    const handleChange = (v: string, actionMeta?: InputActionMeta) => {
+        const event = {
+            target: {
+                value: "",
+                name: "category"
+            }
+        }
+
+        if (v && v.match(UUID_REGEX) && !actionMeta) {
+            event.target.value = v;
+            onChange(event as unknown as ChangeEvent<HTMLInputElement>);
+            return;
+        }
+
+        if (!v && !actionMeta) {
+            event.target.value = "";
+            onChange(event as unknown as ChangeEvent<HTMLInputElement>);
+            return;
+        }
+
+        if (actionMeta?.action === "menu-close" && actionMeta.prevInputValue && !v) {
+            const newType = actionMeta.prevInputValue;
+            const id = uuidv4();
+            saveType({
+                id,
+                type: newType
+            }).then(() => {
+                event.target.value = id;
+                onChange(event as unknown as ChangeEvent<HTMLInputElement>);
+                handleUpdateCategoryList();
+            }).catch(() => {
+                console.error("Cannot save type")
+            })
+        }
+    }
+
     return <form>
         <Heading color={colors.darkgrayblue} as='h3' size='lg' mb={{base: "1rem", md: "2rem"}}>
             {feedbackFormTitle()}
@@ -97,22 +155,20 @@ export const FeedbackForm = (props: FeedbackFormProps) => {
         <TextField
             name="title"
             value={form.title.value}
-            label={"Feedback Title"}
+            label="Feedback Title"
             errorMessage={form.title.errorMessage}
             onChange={onChange}
         />
-        <SelectField
-            name="category"
-            value={form.category.value}
-            label={"Category"}
+        <CreatableField
+            label="Category"
             errorMessage={form.category.errorMessage}
-            options={props.categories}
-            onChange={onChange}
+            options={categories}
+            onChangeCreateField={handleChange}
         />
         <TextAreaField
             name="description"
             value={form.description.value}
-            label={"Feedback Description"}
+            label="Feedback Description"
             errorMessage={form.description.errorMessage}
             onChange={onChange}
         />

@@ -1,18 +1,17 @@
 import { v4 as uuidv4 } from 'uuid';
 import {
-    AuthorType,
-    CommentType,
     FeedbackType,
     RoadmapType,
     StatusEnum,
-    StatusType,
-    Type,
-    VoteType
+    Type
 } from "../types/FeedbackType";
 
 const urlApi = 'http://localhost:3001'
 
 export const getFeedbacks = () => fetch(`${urlApi}/feedbacks`)
+    .then((response) => response.json());
+
+export const getFeedbackById = (id: string) => fetch(`${urlApi}/feedbacks/${id}`)
     .then((response) => response.json());
 
 export const getFeedbacksByTypeId = (typeId: string) => fetch(`${urlApi}/feedbacks/?typeId=${typeId}`)
@@ -30,7 +29,7 @@ export const getComments = () => fetch(`${urlApi}/comments`)
 export const getUsers = () => fetch(`${urlApi}/users`)
     .then((response) => response.json());
 
-export const getFeedbackAuthor = (id: string) => fetch(`${urlApi}/users/${id}`)
+export const getAuthorById = (id: string) => fetch(`${urlApi}/users/${id}`)
     .then((response) => response.json());
 
 export const getStatus = (id: string) => fetch(`${urlApi}/statuses/${id}`)
@@ -39,25 +38,37 @@ export const getStatus = (id: string) => fetch(`${urlApi}/statuses/${id}`)
 export const getType = (id: string) => fetch(`${urlApi}/types/${id}`)
     .then((response) => response.json());
 
+export const fillFeedback = async (item: any, withAuthor: boolean) => {
+    const comments = await getComments();
+    const author = withAuthor ? await getAuthorById(item.authorId) : item.authorId;
+    const type = await getType(item.typeId);
+    const status = await getStatus(item.statusId);
+    const commentsUpdated = comments.filter((comment: any) => comment.feedbackId === item.id);
+    if (withAuthor) {
+        for (let [index, comment] of commentsUpdated.entries()) {
+            commentsUpdated[index].author = await getAuthorById(comment.authorId);
+            commentsUpdated[index].comment = commentsUpdated[index].text;
+        }
+    }
+
+    return {
+        id: item.id,
+        title: item.title,
+        detail: item.detail,
+        vote: item.vote,
+        author,
+        comments: commentsUpdated,
+        type,
+        status
+    };
+}
+
 // TODO fix types
 async function fillFeedbackList(response: any[]) {
     const feedbackList: FeedbackType[] = [];
-    const comments = await getComments();
 
     for (const item of response) {
-        const author = await getFeedbackAuthor(item.authorId);
-        const type = await getType(item.typeId);
-        const status = await getStatus(item.statusId);
-        const feedback = {
-            id: item.id,
-            title: item.title,
-            detail: item.detail,
-            vote: item.vote,
-            author,
-            comments: comments.filter((comment: any) => comment.feedbackId === item.id),
-            type,
-            status
-        };
+        const feedback = await fillFeedback(item, false);
         feedbackList.push(feedback);
     }
 
@@ -91,6 +102,11 @@ export const getPageData = async (): Promise<{feedbackList: FeedbackType[], road
         roadmap: await getRoadmapData(response),
         feedbackList: await fillFeedbackList(response)
     };
+}
+
+export const getFeedback = async (id: string) => {
+    const item = await getFeedbackById(id);
+    return await fillFeedback(item, true);
 }
 
 export const getAllFeedbackList = async () => {
@@ -139,4 +155,14 @@ export const saveFeedback = async (feedback: FeedbackType) => {
         },
         body: JSON.stringify(feedbackItemSave)
     });
+}
+
+export const saveType = async (type: Type) => {
+    return fetch(`${urlApi}/types`, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(type)
+    })
 }

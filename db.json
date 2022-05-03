@@ -33,6 +33,19 @@
       "commentIds": [],
       "typeId": "24dd9ff9-2f4f-40cb-84f8-d1bb13dca019",
       "authorId": "9dd1a809-5bce-401e-accb-07b7f6808c11"
+    },
+    {
+      "id": "5b0b9178-1cd9-4213-9810-e14b4c5e1868",
+      "statusId": "1dbe369d-c9f2-4257-8edf-56cdc9507580",
+      "title": "Test feedback",
+      "detail": "Test finished",
+      "vote": {
+        "voteDown": [],
+        "voteUp": []
+      },
+      "commentIds": [],
+      "typeId": "24dd9ff9-2f4f-40cb-84f8-d1bb13dca019",
+      "authorId": "9dd1a809-5bce-401e-accb-07b7f6808c11"
     }
   ],
   "statuses": [
@@ -72,10 +85,6 @@
     {
       "id": "753f6923-043d-4ca7-bc25-7c5c254a4352",
       "type": "UX"
-    },
-    {
-      "id": "5bc69980-0fd2-435b-b84b-62e2f77ad572",
-      "type": "All"
     }
   ],
   "comments": [

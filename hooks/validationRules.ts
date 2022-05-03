@@ -1,5 +1,5 @@
 import {ValidationArgs, ValidationResult} from "../types/ValidationTypes";
-import {EMAIL_W3C} from "./regexRules";
+import {EMAIL_W3C} from "../helpers/regexRules";
 
 function returnValidationResult(errorCondition: boolean, errorMessage: string): ValidationResult {
     if (errorCondition) {

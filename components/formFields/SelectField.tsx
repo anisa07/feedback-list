@@ -2,10 +2,10 @@ import {Box, Input, Text, Select} from "@chakra-ui/react";
 import {ChangeEvent} from "react";
 import {colors} from "../../styles/colors";
 import {FormFieldProps} from "./TextField";
-import {CategoryOptions} from "../../pages/feedback/create";
+import {Options} from "../feedbackForm/FeedbackForm";
 
 export interface SelectFieldProps extends FormFieldProps {
-    options: CategoryOptions[]
+    options: Options[]
 }
 
 export function SelectField(props: SelectFieldProps) {
