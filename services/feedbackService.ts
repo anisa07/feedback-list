@@ -135,7 +135,7 @@ export const saveFeedback = async (feedback: FeedbackType) => {
     if (feedback.id) {
         feedbackItemSave.id = feedback.id;
         feedbackItemSave.commentIds = feedback.comments.map(item => item.id);
-        return fetch(`${urlApi}/feedbacks`, {
+        return fetch(`${urlApi}/feedbacks/${feedback.id}`, {
             method: "PUT",
             headers: {
                 'Content-Type': 'application/json'
@@ -155,6 +155,22 @@ export const saveFeedback = async (feedback: FeedbackType) => {
         },
         body: JSON.stringify(feedbackItemSave)
     });
+}
+
+// TODO fix response type
+export const saveComment = async (commentToSave: any) => {
+    const id = uuidv4();
+    await fetch(`${urlApi}/comments`, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            ...commentToSave,
+            id
+        })
+    });
+    return id;
 }
 
 export const saveType = async (type: Type) => {

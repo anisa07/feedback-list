@@ -5,11 +5,12 @@ import {ensureMaxLength, ensureNotEmpty} from "../../../hooks/validationRules";
 import {useFormCustomHook} from "../../../hooks/useFormHook";
 import {colors} from "../../../styles/colors";
 import { MAX_LENGTH } from "../../../helpers/regexRules";
+import {AuthorType, CommentType} from "../../../types/FeedbackType";
 
 interface AddCommentProps {
     sendTo: string;
     commentRef: Ref<HTMLTextAreaElement>,
-    onSubmitComment: () => void
+    onSubmitComment: (c: CommentType) => void
 }
 
 export const AddComment = (props: AddCommentProps) => {
@@ -36,7 +37,15 @@ export const AddComment = (props: AddCommentProps) => {
                 value: props.sendTo
             }})
         }
-    }, [props.sendTo])
+    }, [props.sendTo]);
+
+    const handleSubmitComment = () => {
+        props.onSubmitComment({
+            id: "",
+            comment: form.comment.value,
+            author: {} as AuthorType
+        });
+    }
 
     return (
         <Box backgroundColor="white" borderRadius="5px" p="2rem">
@@ -56,7 +65,7 @@ export const AddComment = (props: AddCommentProps) => {
                 />
                 <Flex justifyContent="space-between">
                     <Text fontSize="14px" color={colors.darkgray}>{`${countLeftLength()} characters left`}</Text>
-                    <Button color="white" backgroundColor={colors.fuchsia} disabled={!isValid()}>Post Comment</Button>
+                    <Button color="white" backgroundColor={colors.fuchsia} disabled={!isValid()} onClick={handleSubmitComment}>Post Comment</Button>
                 </Flex>
             </form>
         </Box>

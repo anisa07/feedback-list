@@ -160,6 +160,7 @@ export const FeedbackForm = (props: FeedbackFormProps) => {
             onChange={onChange}
         />
         <CreatableField
+            defaultValue={props.feedback?.type.id || ""}
             label="Category"
             errorMessage={form.category.errorMessage}
             options={categories}

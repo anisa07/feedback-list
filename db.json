@@ -30,7 +30,10 @@
         "voteDown": [],
         "voteUp": []
       },
-      "commentIds": [],
+      "commentIds": [
+        "9fce0df7-17fa-4830-b339-8f399c93f8d2",
+        "4fd2df59-d8e6-48d6-b3d8-9db3f7cd14ba"
+      ],
       "typeId": "24dd9ff9-2f4f-40cb-84f8-d1bb13dca019",
       "authorId": "9dd1a809-5bce-401e-accb-07b7f6808c11"
     },
