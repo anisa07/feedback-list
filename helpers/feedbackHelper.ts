@@ -3,25 +3,25 @@ import {SortType} from "../types/SortType";
 
 export const sortMostUpVotes = (feedbackList: FeedbackType[]) => (
     feedbackList.sort((a, b) =>
-        (a.vote.voteUp.length - a.vote.voteDown.length) - (b.vote.voteUp.length - b.vote.voteDown.length)
+        (b.vote.voteUp.length - b.vote.voteDown.length) - (a.vote.voteUp.length - a.vote.voteDown.length)
     )
 )
 
 export const sortMostDownVotes = (feedbackList: FeedbackType[]) => (
     feedbackList.sort((a, b) =>
-        (b.vote.voteUp.length - b.vote.voteDown.length) - (a.vote.voteUp.length - a.vote.voteDown.length)
+        (a.vote.voteUp.length - a.vote.voteDown.length) - (b.vote.voteUp.length - b.vote.voteDown.length)
     )
 )
 
 export const sortMostDiscussed = (feedbackList: FeedbackType[]) => (
     feedbackList.sort((a, b) => (
-        a.comments.length - b.comments.length
+        b.comments.length - a.comments.length
     ))
 )
 
 export const sortLessDiscussed = (feedbackList: FeedbackType[]) => (
     feedbackList.sort((a, b) => (
-        b.comments.length - a.comments.length
+        a.comments.length - b.comments.length
     ))
 )
 

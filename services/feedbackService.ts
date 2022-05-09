@@ -1,54 +1,75 @@
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 import {
     FeedbackType,
     RoadmapType,
     StatusEnum,
-    Type
+    CategoryType, VoteType, StatusType, CommentType, UserType
 } from "../types/FeedbackType";
 
 const urlApi = 'http://localhost:3001'
 
-export const getFeedbacks = () => fetch(`${urlApi}/feedbacks`)
+interface FeedbackDto {
+    id: string,
+    statusId: string,
+    title: string,
+    detail: string,
+    vote: VoteType,
+    commentIds: string[],
+    typeId: string,
+    authorId: string
+}
+
+interface CommentDto {
+    id: string,
+    authorId: string,
+    text: string
+}
+
+export const getFeedbacks = (): Promise<FeedbackDto[]> => fetch(`${urlApi}/feedbacks`)
     .then((response) => response.json());
 
-export const getFeedbackById = (id: string) => fetch(`${urlApi}/feedbacks/${id}`)
+export const getFeedbackById = (id: string): Promise<FeedbackDto> => fetch(`${urlApi}/feedbacks/${id}`)
     .then((response) => response.json());
 
-export const getFeedbacksByTypeId = (typeId: string) => fetch(`${urlApi}/feedbacks/?typeId=${typeId}`)
+export const getFeedbacksByTypeId = (typeId: string): Promise<FeedbackDto[]> => fetch(`${urlApi}/feedbacks/?typeId=${typeId}`)
     .then((response) => response.json());
 
-export const getStatuses = () => fetch(`${urlApi}/statuses`)
+export const getStatuses = (): Promise<StatusType[]> => fetch(`${urlApi}/statuses`)
     .then((response) => response.json());
 
-export const getTypes = () => fetch(`${urlApi}/types`)
+export const getStatus = (id: string): Promise<StatusType> => fetch(`${urlApi}/statuses/${id}`)
     .then((response) => response.json());
 
-export const getComments = () => fetch(`${urlApi}/comments`)
+export const getTypes = (): Promise<CategoryType[]> => fetch(`${urlApi}/types`)
     .then((response) => response.json());
 
-export const getUsers = () => fetch(`${urlApi}/users`)
+export const getType = (id: string): Promise<CategoryType> => fetch(`${urlApi}/types/${id}`)
     .then((response) => response.json());
 
-export const getAuthorById = (id: string) => fetch(`${urlApi}/users/${id}`)
+export const getComments = (): Promise<CommentDto[]> => fetch(`${urlApi}/comments`)
     .then((response) => response.json());
 
-export const getStatus = (id: string) => fetch(`${urlApi}/statuses/${id}`)
+export const getUsers = (): Promise<UserType[]> => fetch(`${urlApi}/users`)
     .then((response) => response.json());
 
-export const getType = (id: string) => fetch(`${urlApi}/types/${id}`)
+export const getAuthorById = (id: string): Promise<UserType> => fetch(`${urlApi}/users/${id}`)
     .then((response) => response.json());
 
-export const fillFeedback = async (item: any, withAuthor: boolean) => {
-    const comments = await getComments();
-    const author = withAuthor ? await getAuthorById(item.authorId) : item.authorId;
+export const fillFeedback = async (item: FeedbackDto) => {
+    const comments: CommentDto[] = await getComments();
+    const author = await getAuthorById(item.authorId);
     const type = await getType(item.typeId);
-    const status = await getStatus(item.statusId);
-    const commentsUpdated = comments.filter((comment: any) => comment.feedbackId === item.id);
-    if (withAuthor) {
-        for (let [index, comment] of commentsUpdated.entries()) {
-            commentsUpdated[index].author = await getAuthorById(comment.authorId);
-            commentsUpdated[index].comment = commentsUpdated[index].text;
-        }
+    const status: StatusType = await getStatus(item.statusId);
+    const commentsUpdated: CommentType[] = []
+    const commentsPerFeedback: CommentDto[] = comments.filter((comment: any) => comment.feedbackId === item.id);
+
+    for (let comment of commentsPerFeedback) {
+        const author = await getAuthorById(comment.authorId);
+        commentsUpdated.push({
+            id: comment.id,
+            comment: comment.text,
+            author
+        })
     }
 
     return {
@@ -63,21 +84,19 @@ export const fillFeedback = async (item: any, withAuthor: boolean) => {
     };
 }
 
-// TODO fix types
-async function fillFeedbackList(response: any[]) {
+async function fillFeedbackList(response: FeedbackDto[]): Promise<FeedbackType[]> {
     const feedbackList: FeedbackType[] = [];
 
     for (const item of response) {
-        const feedback = await fillFeedback(item, false);
+        const feedback = await fillFeedback(item);
         feedbackList.push(feedback);
     }
 
     return feedbackList;
 }
 
-// TODO fix response type from any to FeedbackResponseType
-async function getRoadmapData(response: any) {
-    const statuses = await getStatuses();
+async function getRoadmapData(response: FeedbackDto[]) {
+    const statuses: StatusType[] = await getStatuses();
     const roadmap: Record<string, RoadmapType> = {
         [StatusEnum.PLANNED]: {} as RoadmapType,
         [StatusEnum.IN_PROGRESS]: {} as RoadmapType,
@@ -92,11 +111,11 @@ async function getRoadmapData(response: any) {
         roadmap[status.status].quantity += 1;
     }
 
-    return  [roadmap[StatusEnum.PLANNED], roadmap[StatusEnum.IN_PROGRESS], roadmap[StatusEnum.LIVE]]
+    return [roadmap[StatusEnum.PLANNED], roadmap[StatusEnum.IN_PROGRESS], roadmap[StatusEnum.LIVE]]
 }
 
-export const getPageData = async (): Promise<{feedbackList: FeedbackType[], roadmap: RoadmapType[]}> => {
-    const response = await getFeedbacks();
+export const getPageData = async (): Promise<{ feedbackList: FeedbackType[], roadmap: RoadmapType[] }> => {
+    const response: FeedbackDto[] = await getFeedbacks();
 
     return {
         roadmap: await getRoadmapData(response),
@@ -104,24 +123,23 @@ export const getPageData = async (): Promise<{feedbackList: FeedbackType[], road
     };
 }
 
-export const getFeedback = async (id: string) => {
-    const item = await getFeedbackById(id);
-    return await fillFeedback(item, true);
+export const getFeedback = async (id: string): Promise<FeedbackType> => {
+    const item: FeedbackDto = await getFeedbackById(id);
+    return await fillFeedback(item);
 }
 
-export const getAllFeedbackList = async () => {
-    const response = await getFeedbacks();
+export const getAllFeedbacks = async (): Promise<FeedbackType[]> => {
+    const response: FeedbackDto[] = await getFeedbacks();
     return await fillFeedbackList(response);
 }
 
-export const getFeedbackListByType = async (id: string) => {
-    const response = await getFeedbacksByTypeId(id);
+export const getFeedbackListByType = async (id: string): Promise<FeedbackType[]> => {
+    const response: FeedbackDto[] = await getFeedbacksByTypeId(id);
     return await fillFeedbackList(response);
 }
 
-export const saveFeedback = async (feedback: FeedbackType) => {
-    //TODO add proper type
-    const feedbackItemSave = {
+export const saveFeedback = async (feedback: FeedbackType): Promise<Response> => {
+    const feedbackItemSave: FeedbackDto = {
         id: "",
         statusId: feedback.status.id,
         title: feedback.title,
@@ -144,9 +162,8 @@ export const saveFeedback = async (feedback: FeedbackType) => {
         })
     }
 
-    // TODO fix response type
-    const statuses = await getStatuses();
-    feedbackItemSave.statusId = (statuses.find((item: any) => item.status === StatusEnum.PLANNED)).id;
+    const statuses: StatusType[] = await getStatuses();
+    feedbackItemSave.statusId = (statuses.find((item: any) => item.status === StatusEnum.PLANNED))?.id || "";
     feedbackItemSave.id = uuidv4();
     return fetch(`${urlApi}/feedbacks`, {
         method: "POST",
@@ -157,8 +174,7 @@ export const saveFeedback = async (feedback: FeedbackType) => {
     });
 }
 
-// TODO fix response type
-export const saveComment = async (commentToSave: any) => {
+export const saveComment = async (commentToSave: CommentDto): Promise<string> => {
     const id = uuidv4();
     await fetch(`${urlApi}/comments`, {
         method: "POST",
@@ -173,7 +189,7 @@ export const saveComment = async (commentToSave: any) => {
     return id;
 }
 
-export const saveType = async (type: Type) => {
+export const saveType = async (type: CategoryType): Promise<Response> => {
     return fetch(`${urlApi}/types`, {
         method: "POST",
         headers: {

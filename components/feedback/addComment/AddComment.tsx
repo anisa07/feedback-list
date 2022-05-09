@@ -5,7 +5,7 @@ import {ensureMaxLength, ensureNotEmpty} from "../../../hooks/validationRules";
 import {useFormCustomHook} from "../../../hooks/useFormHook";
 import {colors} from "../../../styles/colors";
 import { MAX_LENGTH } from "../../../helpers/regexRules";
-import {AuthorType, CommentType} from "../../../types/FeedbackType";
+import {UserType, CommentType} from "../../../types/FeedbackType";
 
 interface AddCommentProps {
     sendTo: string;
@@ -43,7 +43,7 @@ export const AddComment = (props: AddCommentProps) => {
         props.onSubmitComment({
             id: "",
             comment: form.comment.value,
-            author: {} as AuthorType
+            author: {} as UserType
         });
     }
 

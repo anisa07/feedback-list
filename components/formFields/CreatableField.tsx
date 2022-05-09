@@ -4,6 +4,7 @@ import {Box, Text} from '@chakra-ui/react';
 import {colors} from "../../styles/colors";
 import {Options} from "../feedbackForm/FeedbackForm";
 import {useEffect, useState} from "react";
+import {OnChangeValue} from "react-select/dist/declarations/src/types";
 
 export interface CreatableSelectProps {
     defaultValue: string,
@@ -15,7 +16,7 @@ export interface CreatableSelectProps {
 
 export const CreatableField = (props: CreatableSelectProps) => {
     const textColor = () => props.errorMessage ? 'crimson' : colors.darkblue;
-    const [defaultValue, setDefaultValue] = useState<Options>();
+    const [defaultValue, setDefaultValue] = useState<SingleValue<Options>>();
 
     useEffect(() => {
         if (props.options && props.defaultValue) {
@@ -23,7 +24,8 @@ export const CreatableField = (props: CreatableSelectProps) => {
         }
     }, [props.defaultValue, props.options])
 
-    const handleChange = (e: SingleValue<Options>) => {
+    const handleChange = (e: OnChangeValue<Options, false>) => {
+        setDefaultValue(e);
         props.onChangeCreateField(e?.value || "");
     }
 
@@ -31,11 +33,10 @@ export const CreatableField = (props: CreatableSelectProps) => {
         props.onChangeCreateField(newValue, actionMeta);
     };
 
-    console.log(defaultValue)
     return <Box>
         <Text fontWeight="semibold" mb='8px' color={textColor()}>{props.label}</Text>
         <CreatableSelect
-            defaultValue={defaultValue}
+            value={defaultValue}
             isClearable={true}
             options={props.options}
             onInputChange={handleInputChange}

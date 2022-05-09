@@ -5,9 +5,9 @@ import {Filter} from "../components/feedbackList/filter/Filter";
 import {RoadmapPreview} from "../components/feedbackList/roadmapPreview/RoadmapPreview";
 import {Header} from "../components/header/Header";
 import {FeedbackList} from "../components/feedbackList/FeedbackList";
-import {FeedbackType, RoadmapType, Type} from "../types/FeedbackType";
+import {FeedbackType, RoadmapType, CategoryType} from "../types/FeedbackType";
 import {
-    getAllFeedbackList,
+    getAllFeedbacks,
     getFeedbackListByType,
     getPageData,
     getTypes
@@ -20,7 +20,7 @@ import {breakpoints} from "../styles/screenSizes";
 import {GetServerSideProps} from "next";
 
 interface HomeProps {
-    types: Type[],
+    types: CategoryType[],
     roadmap: RoadmapType[],
     feedbackList: FeedbackType[]
 }
@@ -60,7 +60,7 @@ const Home: NextPage<HomeProps> = ({types, roadmap, feedbackList}) => {
         const newFilters = prepareFilters(id);
         setFilters(newFilters);
         if (newFilters[0].id === id) {
-            getAllFeedbackList().then(feedbacks => {
+            getAllFeedbacks().then(feedbacks => {
                 setSortedFeedbacks(sortBy(feedbacks, selectedType));
             })
         }

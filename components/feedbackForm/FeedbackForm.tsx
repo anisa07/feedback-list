@@ -1,4 +1,4 @@
-import {FeedbackType, StatusEnum, Type} from "../../types/FeedbackType";
+import {FeedbackType, StatusEnum, CategoryType} from "../../types/FeedbackType";
 import {Flex, Button, Heading} from "@chakra-ui/react";
 import { v4 as uuidv4 } from 'uuid';
 import {colors} from "../../styles/colors";
@@ -59,7 +59,7 @@ export const FeedbackForm = (props: FeedbackFormProps) => {
 
     const handleUpdateCategoryList = () => {
         // TODO add return response types
-        getTypes().then((types: Type[]) => {
+        getTypes().then((types: CategoryType[]) => {
             const newCategories: Options[] = types.map(item => ({
                 value: item.id,
                 label: item.type

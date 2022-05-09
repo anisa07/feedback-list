@@ -9,13 +9,13 @@ export interface FeedbackType {
     title: string,
     detail: string,
     vote: VoteType,
-    author: AuthorType,
+    author: UserType,
     comments: CommentType[],
-    type: Type,
+    type: CategoryType,
     status: StatusType
 }
 
-export interface AuthorType {
+export interface UserType {
     id: string,
     name: string,
     email: string,
@@ -25,23 +25,21 @@ export interface AuthorType {
 export interface CommentType {
     id: string,
     comment: string,
-    author: AuthorType,
+    author: UserType,
 }
 
-export interface Type {
+export interface CategoryType {
     id: string,
     type: string
 }
 
 export interface StatusType {
     id: string,
-    status: StatusEnum
+    status: StatusEnum,
+    description?: string,
 }
 
-export interface RoadmapType {
-    id: string,
-    status: StatusEnum,
-    description: string,
+export interface RoadmapType extends StatusType{
     quantity: number
 }
 
