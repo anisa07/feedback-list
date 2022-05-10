@@ -32,8 +32,6 @@ const Home = () => {
         dispatch(getFeedbackAllData());
     }, [])
 
-    // const [incrementAmount, setIncrementAmount] = useState<number>(0);
-
     useEffect(() => {
         if (feedbackList) {
             setSortedFeedbacks(sortBy(feedbackList, selectedType))

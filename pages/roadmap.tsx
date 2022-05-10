@@ -1,15 +1,10 @@
 import {Header} from "../components/header/Header";
 import {Box, Flex, Tabs, TabList, TabPanels, Tab, TabPanel, Text} from "@chakra-ui/react";
-import {GetServerSideProps, GetStaticProps, NextPage} from "next";
-import {getFeedbackData} from "../services/feedbackService";
 import {FeedbackType, RoadmapType, StatusEnum} from "../types/FeedbackType";
 import {useEffect, useState} from "react";
 import {RoadmapCard} from "../components/roadmapView/roadmapCard/RoadmapCard";
-
-interface RoadmapProps {
-    roadmap: RoadmapType[],
-    feedbackList: FeedbackType[]
-}
+import {useAppDispatch, useAppSelector} from "../hooks/reduxHooks";
+import {getFeedbackAllData, selectFeedbackList, selectRoadmap} from "../features/feedbackSlice";
 
 export interface FeedbackMapType {
     name: StatusEnum,
@@ -17,7 +12,15 @@ export interface FeedbackMapType {
     feedbackList: FeedbackType[]
 }
 
-const Roadmap: NextPage<RoadmapProps> = ({roadmap, feedbackList}) => {
+const Roadmap = () => {
+    const dispatch = useAppDispatch();
+    const feedbackList: FeedbackType[] = useAppSelector(selectFeedbackList);
+    const roadmap: RoadmapType[] = useAppSelector(selectRoadmap);
+
+    useEffect(() => {
+        dispatch(getFeedbackAllData());
+    }, [])
+
     const [feedbackMap, setFeedbackMap] = useState<Record<StatusEnum, FeedbackMapType>>({
         [StatusEnum.PLANNED]: {
             name: StatusEnum.PLANNED,
@@ -105,17 +108,6 @@ const Roadmap: NextPage<RoadmapProps> = ({roadmap, feedbackList}) => {
             ))}
         </Flex>
     </Box>
-}
-
-export const getServerSideProps: GetServerSideProps<RoadmapProps> = async () => {
-    const data = await getFeedbackData();
-
-    return {
-        props: {
-            roadmap: data.roadmap,
-            feedbackList: data.feedbackList
-        }
-    }
 }
 
 export default Roadmap
