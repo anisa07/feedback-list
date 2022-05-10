@@ -102,22 +102,26 @@
     {
       "id": "730eacef-3652-4857-b9f4-efe481a90763",
       "authorId": "9dd1a809-5bce-401e-accb-07b7f6808c11",
+      "feedbackId": "84e5b8f2-fad0-45a3-846c-f2fad01e47a0",
       "text": "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout."
     },
     {
       "id": "784bc396-6ee3-4325-8ea3-eb28da402893",
       "authorId": "92813172-c9e4-4087-8d82-b1f316101464",
+      "feedbackId": "84e5b8f2-fad0-45a3-846c-f2fad01e47a0",
       "text": "The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English."
     },
     {
       "authorId": "9dd1a809-5bce-401e-accb-07b7f6808c11",
       "text": "Test comment",
+      "feedbackId": "84e5b8f2-fad0-45a3-846c-f2fad01e47a0",
       "id": "2e3d28ec-1b14-4369-835e-5a7137994b2c"
     },
     {
       "authorId": "9dd1a809-5bce-401e-accb-07b7f6808c11",
       "text": "anna@test.com left comment",
-      "id": "bc5d1a8f-0bb8-478c-99a0-39eea7ba0752"
+      "id": "bc5d1a8f-0bb8-478c-99a0-39eea7ba0752",
+      "feedbackId": "147940d2-3e6f-40d6-844c-018bc31735b0"
     }
   ],
   "users": [

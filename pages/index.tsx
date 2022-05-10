@@ -1,4 +1,3 @@
-import type {GetStaticProps, NextPage} from 'next'
 import {Box, Flex, useMediaQuery} from '@chakra-ui/react'
 import {Logo} from "../components/feedbackList/logo/Logo";
 import {Filter} from "../components/feedbackList/filter/Filter";
@@ -9,27 +8,31 @@ import {FeedbackType, RoadmapType, CategoryType} from "../types/FeedbackType";
 import {
     getAllFeedbacks,
     getFeedbackListByType,
-    getPageData,
-    getTypes
 } from "../services/feedbackService";
 import {useEffect, useState} from "react";
 import {FilterType} from "../types/FilterType";
 import {SortType} from "../types/SortType";
 import {sortBy} from "../helpers/feedbackHelper";
 import {breakpoints} from "../styles/screenSizes";
-import {GetServerSideProps} from "next";
+import {useAppDispatch, useAppSelector} from "../hooks/reduxHooks";
+import {getFeedbackAllData, selectFeedbackList, selectRoadmap, selectTypes} from "../features/feedbackSlice";
 
-interface HomeProps {
-    types: CategoryType[],
-    roadmap: RoadmapType[],
-    feedbackList: FeedbackType[]
-}
-
-const Home: NextPage<HomeProps> = ({types, roadmap, feedbackList}) => {
+const Home = () => {
+    const dispatch = useAppDispatch();
+    const feedbackList: FeedbackType[] = useAppSelector(selectFeedbackList);
+    const roadmap: RoadmapType[] = useAppSelector(selectRoadmap);
+    const types: CategoryType[] = useAppSelector(selectTypes);
     const [isLargerThanMd] = useMediaQuery(`(min-width: ${breakpoints.md})`);
+
     const [filters, setFilters] = useState<FilterType[]>([]);
     const [sortedFeedbacks, setSortedFeedbacks] = useState<FeedbackType[]>([]);
     const [selectedType, setSelectedType] = useState<SortType>("" as SortType);
+
+    useEffect(() => {
+        dispatch(getFeedbackAllData());
+    }, [])
+
+    // const [incrementAmount, setIncrementAmount] = useState<number>(0);
 
     useEffect(() => {
         if (feedbackList) {
@@ -103,18 +106,5 @@ const Home: NextPage<HomeProps> = ({types, roadmap, feedbackList}) => {
         </Flex>
     )
 };
-
-export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
-    const data = await getPageData();
-    const types = await getTypes();
-
-    return {
-        props: {
-            types,
-            roadmap: data.roadmap,
-            feedbackList: data.feedbackList
-        }
-    }
-}
 
 export default Home

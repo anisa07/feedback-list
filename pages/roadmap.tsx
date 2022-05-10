@@ -1,7 +1,7 @@
 import {Header} from "../components/header/Header";
 import {Box, Flex, Tabs, TabList, TabPanels, Tab, TabPanel, Text} from "@chakra-ui/react";
 import {GetServerSideProps, GetStaticProps, NextPage} from "next";
-import {getPageData} from "../services/feedbackService";
+import {getFeedbackData} from "../services/feedbackService";
 import {FeedbackType, RoadmapType, StatusEnum} from "../types/FeedbackType";
 import {useEffect, useState} from "react";
 import {RoadmapCard} from "../components/roadmapView/roadmapCard/RoadmapCard";
@@ -108,7 +108,7 @@ const Roadmap: NextPage<RoadmapProps> = ({roadmap, feedbackList}) => {
 }
 
 export const getServerSideProps: GetServerSideProps<RoadmapProps> = async () => {
-    const data = await getPageData();
+    const data = await getFeedbackData();
 
     return {
         props: {

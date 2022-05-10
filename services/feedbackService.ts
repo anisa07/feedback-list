@@ -3,27 +3,11 @@ import {
     FeedbackType,
     RoadmapType,
     StatusEnum,
-    CategoryType, VoteType, StatusType, CommentType, UserType
+    CategoryType, StatusType, CommentType, UserType
 } from "../types/FeedbackType";
+import {CommentDto, FeedbackDto} from "../types/DtoTypes";
 
 const urlApi = 'http://localhost:3001'
-
-interface FeedbackDto {
-    id: string,
-    statusId: string,
-    title: string,
-    detail: string,
-    vote: VoteType,
-    commentIds: string[],
-    typeId: string,
-    authorId: string
-}
-
-interface CommentDto {
-    id: string,
-    authorId: string,
-    text: string
-}
 
 export const getFeedbacks = (): Promise<FeedbackDto[]> => fetch(`${urlApi}/feedbacks`)
     .then((response) => response.json());
@@ -61,7 +45,7 @@ export const fillFeedback = async (item: FeedbackDto) => {
     const type = await getType(item.typeId);
     const status: StatusType = await getStatus(item.statusId);
     const commentsUpdated: CommentType[] = []
-    const commentsPerFeedback: CommentDto[] = comments.filter((comment: any) => comment.feedbackId === item.id);
+    const commentsPerFeedback: CommentDto[] = comments.filter((comment) => comment.feedbackId === item.id);
 
     for (let comment of commentsPerFeedback) {
         const author = await getAuthorById(comment.authorId);
@@ -95,7 +79,7 @@ async function fillFeedbackList(response: FeedbackDto[]): Promise<FeedbackType[]
     return feedbackList;
 }
 
-async function getRoadmapData(response: FeedbackDto[]) {
+async function getRoadmapData(response: FeedbackDto[]): Promise<RoadmapType[]> {
     const statuses: StatusType[] = await getStatuses();
     const roadmap: Record<string, RoadmapType> = {
         [StatusEnum.PLANNED]: {} as RoadmapType,
@@ -114,7 +98,7 @@ async function getRoadmapData(response: FeedbackDto[]) {
     return [roadmap[StatusEnum.PLANNED], roadmap[StatusEnum.IN_PROGRESS], roadmap[StatusEnum.LIVE]]
 }
 
-export const getPageData = async (): Promise<{ feedbackList: FeedbackType[], roadmap: RoadmapType[] }> => {
+export const getFeedbackData = async (): Promise<{ feedbackList: FeedbackType[], roadmap: RoadmapType[] }> => {
     const response: FeedbackDto[] = await getFeedbacks();
 
     return {

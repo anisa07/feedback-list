@@ -34,9 +34,10 @@ const FeedbackInDetails: NextPage<FeedbackProps> = (props: FeedbackProps) => {
     const handleSubmitComment = async (newComment: CommentType) => {
         // TODO fix authorID
         const commentId = await saveComment({
-            feedbackId: props.feedback.id,
             authorId: "9dd1a809-5bce-401e-accb-07b7f6808c11",
             text: newComment.comment,
+            id: "",
+            feedbackId: props.feedback.id
         });
         await saveFeedback({...props.feedback, comments: [...props.feedback.comments, {id: commentId } as CommentType]});
         // TODO fix
