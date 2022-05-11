@@ -4,7 +4,9 @@ import {FeedbackType, RoadmapType, StatusEnum} from "../types/FeedbackType";
 import {useEffect, useState} from "react";
 import {RoadmapCard} from "../components/roadmapView/roadmapCard/RoadmapCard";
 import {useAppDispatch, useAppSelector} from "../hooks/reduxHooks";
-import {getFeedbackAllData, selectFeedbackList, selectRoadmap} from "../features/feedbackSlice";
+import {getAllFeedbacksData, selectFeedbackList, selectRoadmap} from "../features/feedbackSlice";
+import {VoteState} from "../components/feedback/vote/Vote";
+import {vote} from "../helpers/feedbackHelper";
 
 export interface FeedbackMapType {
     name: StatusEnum,
@@ -18,7 +20,7 @@ const Roadmap = () => {
     const roadmap: RoadmapType[] = useAppSelector(selectRoadmap);
 
     useEffect(() => {
-        dispatch(getFeedbackAllData());
+        dispatch(getAllFeedbacksData());
     }, [])
 
     const [feedbackMap, setFeedbackMap] = useState<Record<StatusEnum, FeedbackMapType>>({
@@ -54,6 +56,13 @@ const Roadmap = () => {
         }
     }, [feedbackList,roadmap])
 
+    const handleVote = async (v: VoteState, roadmapCard: FeedbackType) => {
+        // TODO get current user
+        const authorId = "9dd1a809-5bce-401e-accb-07b7f6808c11";
+        await vote(v, roadmapCard, authorId);
+        dispatch(getAllFeedbacksData());
+    }
+
     return <Box p={{ base: 0, md: '1.5rem' }}>
         <Header
             showTitle={true}
@@ -76,7 +85,7 @@ const Roadmap = () => {
                 {Object.values(feedbackMap).map(feedbackItem => (
                     <TabPanel key={feedbackItem.name} flex="1">
                         {feedbackItem.feedbackList.map(feedback => (
-                            <RoadmapCard key={feedback.id} roadmapCard={feedback} name={feedbackItem.name} />
+                            <RoadmapCard onVote={handleVote} key={feedback.id} roadmapCard={feedback} name={feedbackItem.name} />
                         ))}
                     </TabPanel>
                 ))}
@@ -102,7 +111,7 @@ const Roadmap = () => {
             {Object.values(feedbackMap).map(feedbackItem => (
                 <Flex key={feedbackItem.name} flexDirection="column" flex="1" mt="0.5rem" mr="0.5rem">
                     {feedbackItem.feedbackList.map(feedback => (
-                        <RoadmapCard key={feedback.id} roadmapCard={feedback} name={feedbackItem.name} />
+                        <RoadmapCard onVote={handleVote} key={feedback.id} roadmapCard={feedback} name={feedbackItem.name} />
                     ))}
                 </Flex>
             ))}

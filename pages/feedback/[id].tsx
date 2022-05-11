@@ -7,21 +7,34 @@ import {GoBackLink} from "../../components/goBackLink/GoBackLink";
 import {Feedback} from "../../components/feedback/Feedback";
 import {CommentsList} from "../../components/feedback/commentsList/CommentsList";
 import {AddComment} from "../../components/feedback/addComment/AddComment";
-import {useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {useRouter} from "next/router";
+import {useSelector} from "react-redux";
+import {useAppDispatch, useAppSelector} from "../../hooks/reduxHooks";
+import {getSelectedFeedbackData, selectFeedbackById} from "../../features/feedbackSlice";
+import {VoteState} from "../../components/feedback/vote/Vote";
+import {vote} from "../../helpers/feedbackHelper";
 
 export interface FeedbackProps {
-    feedback: FeedbackType
+    feedbackId: string
 }
 
-const FeedbackInDetails: NextPage<FeedbackProps> = (props: FeedbackProps) => {
+const FeedbackInDetails: NextPage<FeedbackProps> = () => {
+    const router = useRouter()
     const [commentTo, setCommentTo] = useState("");
-    const router = useRouter();
+    const dispatch = useAppDispatch();
+    const feedback: FeedbackType = useAppSelector(selectFeedbackById);
+
+    useEffect(() => {
+        if (router.query?.id) {
+            dispatch(getSelectedFeedbackData(router.query.id as string));
+        }
+    }, [router.query])
 
     const commentRef = useRef<HTMLTextAreaElement>(null);
 
     const handleEditFeedback = () => {
-        router.push(`/feedback/edit/${props.feedback.id}`);
+        router.push(`/feedback/edit/${router.query?.id}`);
     }
 
     const handleReplyComment = (a: string) => {
@@ -37,14 +50,20 @@ const FeedbackInDetails: NextPage<FeedbackProps> = (props: FeedbackProps) => {
             authorId: "9dd1a809-5bce-401e-accb-07b7f6808c11",
             text: newComment.comment,
             id: "",
-            feedbackId: props.feedback.id
+            feedbackId: router.query?.id as string
         });
-        await saveFeedback({...props.feedback, comments: [...props.feedback.comments, {id: commentId } as CommentType]});
-        // TODO fix
-        router.back()
+        await saveFeedback({...feedback, comments: [...feedback.comments, {id: commentId } as CommentType]});
+        dispatch(getSelectedFeedbackData(router.query.id as string));
     }
 
-    return <Box p={{base: '1rem', md: '3rem', lg: '5rem 7.5rem'}}>
+    const handleVote = async (v: VoteState, feedback: FeedbackType) => {
+        // TODO get current user
+        const authorId = "9dd1a809-5bce-401e-accb-07b7f6808c11";
+        await vote(v, feedback, authorId);
+        dispatch(getSelectedFeedbackData(router.query.id as string));
+    }
+
+    return <Box p={{base: '1rem', md: '3rem', lg: '5re m 7.5rem'}}>
         <Flex justifyContent="space-between" alignItems="center" mb="1rem">
             <GoBackLink color={colors.darkblue} />
             <Button color="white" backgroundColor="blue.500" size='md'
@@ -52,20 +71,10 @@ const FeedbackInDetails: NextPage<FeedbackProps> = (props: FeedbackProps) => {
                 Edit Feedback
             </Button>
         </Flex>
-        <Feedback feedback={props.feedback} />
-        <CommentsList onReply={handleReplyComment} comments={props.feedback.comments} />
+        <Feedback onVote={handleVote} feedback={feedback} />
+        <CommentsList onReply={handleReplyComment} comments={ feedback.comments} />
         <AddComment sendTo={commentTo} onSubmitComment={handleSubmitComment} commentRef={commentRef} />
     </Box>
 }
-
-export const getServerSideProps: GetServerSideProps<FeedbackProps> = async (context) => {
-    const feedback = await getFeedback(context.params?.id as string);
-    return {
-        props: {
-            feedback
-        }
-    }
-}
-
 
 export default FeedbackInDetails

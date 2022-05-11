@@ -10,15 +10,17 @@
           "92813172-c9e4-4087-8d82-b1f316101464"
         ],
         "voteUp": [
-          "9dd1a809-5bce-401e-accb-07b7f6808c11",
-          "8d0e5ed5-f796-49bb-a738-1043ad22b4a7"
+          "8d0e5ed5-f796-49bb-a738-1043ad22b4a7",
+          "9dd1a809-5bce-401e-accb-07b7f6808c11"
         ]
       },
       "commentIds": [
         "730eacef-3652-4857-b9f4-efe481a90763",
-        "784bc396-6ee3-4325-8ea3-eb28da402893"
+        "784bc396-6ee3-4325-8ea3-eb28da402893",
+        "2e3d28ec-1b14-4369-835e-5a7137994b2c",
+        "4c612f20-aa36-4255-8727-f4a6bdc060c0"
       ],
-      "typeId": "7670a08b-23f8-4117-8c20-62162a4e18a2",
+      "typeId": "24dd9ff9-2f4f-40cb-84f8-d1bb13dca019",
       "authorId": "9dd1a809-5bce-401e-accb-07b7f6808c11"
     },
     {
@@ -28,10 +30,11 @@
       "detail": "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. ",
       "vote": {
         "voteDown": [],
-        "voteUp": []
+        "voteUp": [
+          "9dd1a809-5bce-401e-accb-07b7f6808c11"
+        ]
       },
       "commentIds": [
-        "2e3d28ec-1b14-4369-835e-5a7137994b2c",
         "bc5d1a8f-0bb8-478c-99a0-39eea7ba0752"
       ],
       "typeId": "24dd9ff9-2f4f-40cb-84f8-d1bb13dca019",
@@ -44,7 +47,9 @@
       "detail": "Test finished",
       "vote": {
         "voteDown": [],
-        "voteUp": []
+        "voteUp": [
+          "9dd1a809-5bce-401e-accb-07b7f6808c11"
+        ]
       },
       "commentIds": [],
       "typeId": "24dd9ff9-2f4f-40cb-84f8-d1bb13dca019",
@@ -122,6 +127,12 @@
       "text": "anna@test.com left comment",
       "id": "bc5d1a8f-0bb8-478c-99a0-39eea7ba0752",
       "feedbackId": "147940d2-3e6f-40d6-844c-018bc31735b0"
+    },
+    {
+      "authorId": "9dd1a809-5bce-401e-accb-07b7f6808c11",
+      "text": "Test comment",
+      "id": "4c612f20-aa36-4255-8727-f4a6bdc060c0",
+      "feedbackId": "84e5b8f2-fad0-45a3-846c-f2fad01e47a0"
     }
   ],
   "users": [

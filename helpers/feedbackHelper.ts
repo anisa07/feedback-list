@@ -1,5 +1,7 @@
 import {FeedbackType} from "../types/FeedbackType";
 import {SortType} from "../types/SortType";
+import {VoteState} from "../components/feedback/vote/Vote";
+import {saveFeedback} from "../services/feedbackService";
 
 export const sortMostUpVotes = (feedbackList: FeedbackType[]) => {
     return [...feedbackList].sort((a, b) =>
@@ -38,4 +40,42 @@ export const sortBy = (feedbackList: FeedbackType[], s?: SortType) => {
         default:
             return feedbackList;
     }
+}
+
+export const vote = async (v: VoteState, feedback: FeedbackType, authorId: string) => {
+    let voteTo: string[] = [];
+    let voteFrom: string[] = [];
+    const copyFeedback = {...feedback};
+    if (v === VoteState.DOWN) {
+        voteTo = [...feedback.vote.voteDown];
+        voteFrom = [...feedback.vote.voteUp];
+    }
+    if (v === VoteState.UP) {
+        voteTo = [...feedback.vote.voteUp];
+        voteFrom =[...feedback.vote.voteDown];
+    }
+
+    if (!voteTo.includes(authorId)) {
+        voteTo.push(authorId);
+    } else {
+        return;
+    }
+    if (voteFrom.includes(authorId)) {
+        const index = voteFrom.indexOf(authorId);
+        voteFrom.splice(index, 1);
+    }
+
+    if (v === VoteState.DOWN) {
+        copyFeedback.vote = {
+            voteDown: [...voteTo],
+            voteUp: [...voteFrom]
+        }
+    }
+    if (v === VoteState.UP) {
+        copyFeedback.vote = {
+            voteDown: [...voteFrom],
+            voteUp: [...voteTo]
+        }
+    }
+    await saveFeedback(copyFeedback);
 }

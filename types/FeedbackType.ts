@@ -44,6 +44,6 @@ export interface RoadmapType extends StatusType{
 }
 
 export interface VoteType {
-    voteDown: [],
-    voteUp: [],
+    voteDown: string[],
+    voteUp: string[],
 }

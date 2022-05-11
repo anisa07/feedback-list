@@ -1,11 +1,12 @@
 import {Flex, Heading, Text} from "@chakra-ui/react";
 import {FeedbackType, StatusEnum} from "../../../types/FeedbackType";
 import {colors} from "../../../styles/colors";
-import {Direction, Vote} from "../../feedback/vote/Vote";
+import {Direction, Vote, VoteState} from "../../feedback/vote/Vote";
 
 interface RoadmapCardProps {
     roadmapCard: FeedbackType,
     name: StatusEnum,
+    onVote: (v: VoteState, feedback: FeedbackType) => void;
 }
 
 export const RoadmapCard = (props: RoadmapCardProps) => {
@@ -18,6 +19,10 @@ export const RoadmapCard = (props: RoadmapCardProps) => {
             case StatusEnum.LIVE:
                 return colors.lightblue;
         }
+    }
+
+    const handleVote = (v: VoteState) => {
+        props.onVote(v, props.roadmapCard);
     }
 
     return <Flex
@@ -51,7 +56,7 @@ export const RoadmapCard = (props: RoadmapCardProps) => {
             {props.roadmapCard.type.type}
         </Text>
         <Flex alignItems="center" justifyContent="space-between" my="0.5rem">
-            <Vote direction={Direction.ROW} voteData={props.roadmapCard.vote}/>
+            <Vote onVote={handleVote} direction={Direction.ROW} voteData={props.roadmapCard.vote}/>
             <Text fontWeight="semibold" color={colors.darkgray}>
                 {props.roadmapCard.comments.length}
             </Text>

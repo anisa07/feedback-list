@@ -4,18 +4,16 @@ import {Filter} from "../components/feedbackList/filter/Filter";
 import {RoadmapPreview} from "../components/feedbackList/roadmapPreview/RoadmapPreview";
 import {Header} from "../components/header/Header";
 import {FeedbackList} from "../components/feedbackList/FeedbackList";
-import {FeedbackType, RoadmapType, CategoryType} from "../types/FeedbackType";
-import {
-    getAllFeedbacks,
-    getFeedbackListByType,
-} from "../services/feedbackService";
+import {CategoryType, FeedbackType, RoadmapType} from "../types/FeedbackType";
+import {getAllFeedbacks, getFeedbackListByType, saveFeedback,} from "../services/feedbackService";
 import {useEffect, useState} from "react";
 import {FilterType} from "../types/FilterType";
 import {SortType} from "../types/SortType";
-import {sortBy} from "../helpers/feedbackHelper";
+import {sortBy, vote} from "../helpers/feedbackHelper";
 import {breakpoints} from "../styles/screenSizes";
 import {useAppDispatch, useAppSelector} from "../hooks/reduxHooks";
-import {getFeedbackAllData, selectFeedbackList, selectRoadmap, selectTypes} from "../features/feedbackSlice";
+import {getAllFeedbacksData, selectFeedbackList, selectRoadmap, selectTypes} from "../features/feedbackSlice";
+import {VoteState} from "../components/feedback/vote/Vote";
 
 const Home = () => {
     const dispatch = useAppDispatch();
@@ -29,7 +27,7 @@ const Home = () => {
     const [selectedType, setSelectedType] = useState<SortType>("" as SortType);
 
     useEffect(() => {
-        dispatch(getFeedbackAllData());
+        dispatch(getAllFeedbacksData());
     }, [])
 
     useEffect(() => {
@@ -75,6 +73,13 @@ const Home = () => {
         setSortedFeedbacks(sortBy(feedbackList, s));
     }
 
+    const handleVote = async (v: VoteState, feedback: FeedbackType) => {
+        // TODO get current user
+        const authorId = "9dd1a809-5bce-401e-accb-07b7f6808c11";
+        await vote(v, feedback, authorId);
+        dispatch(getAllFeedbacksData());
+    }
+
     return (
         <Flex direction={{ base: 'column', lg: 'row' }}>
             <Flex
@@ -99,7 +104,7 @@ const Home = () => {
                     showSort={true}
                     title={`${sortedFeedbacks ? sortedFeedbacks.length : 0} Suggestions`}
                     onSort={handleSort} />
-                <FeedbackList feedbackList={sortedFeedbacks} />
+                <FeedbackList onVote={handleVote} feedbackList={sortedFeedbacks} />
             </Box>
         </Flex>
     )
