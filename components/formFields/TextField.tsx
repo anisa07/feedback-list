@@ -7,6 +7,7 @@ export interface FormFieldProps {
     value: string,
     label: string,
     errorMessage: string,
+    type?: string,
 
     onChange: (v: ChangeEvent<HTMLInputElement>) => void,
 }
@@ -22,6 +23,7 @@ export function TextField(props: FormFieldProps) {
         <Box my="0.75rem">
             <Text fontWeight="semibold" mb='8px' color={textColor()}>{props.label}</Text>
             <Input
+                type={props.type}
                 name={props.name}
                 isInvalid={!!props.errorMessage}
                 size='md'

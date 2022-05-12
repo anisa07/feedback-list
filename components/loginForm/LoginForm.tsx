@@ -1,11 +1,11 @@
-import {Flex, Button, Heading} from "@chakra-ui/react";
+import {Flex, Button, Heading, Text, Box} from "@chakra-ui/react";
 import {colors} from "../../styles/colors";
 import {TextField} from "../formFields/TextField";
 import {useRouter} from "next/router";
 import {useFormCustomHook} from "../../hooks/useFormHook";
 import {FormData} from "../../types/ValidationTypes";
 import {ensureNotEmpty} from "../../hooks/validationRules";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {sendAuthData} from "../../services/authService";
 
 export const LoginForm = () => {
@@ -24,22 +24,19 @@ export const LoginForm = () => {
             validation: [ensureNotEmpty]
         },
     };
-    const { onChange, isValid, form, resetFormData } = useFormCustomHook(formData);
-
-    useEffect(() => {
-
-    }, []);
+    const { onChange, isValid, form } = useFormCustomHook(formData);
 
     const router = useRouter();
 
     const goBack = () => router.back();
 
     const handleLogin = async () => {
+        setLoginError("");
         try {
             await sendAuthData({email: form.email.value, password: form.password.value});
             goBack();
-        } catch (e) {
-            // TODO implement behavior, notification?
+        } catch (e: any) {
+            setLoginError(e.message);
             console.error("Cannot Login")
         }
     };
@@ -56,6 +53,7 @@ export const LoginForm = () => {
             onChange={onChange}
         />
         <TextField
+            type="password"
             name="password"
             value={form.password.value}
             label="Password"
@@ -68,5 +66,8 @@ export const LoginForm = () => {
                 Login
             </Button>
         </Flex>
+        <Box>
+            <Text color="crimson">{loginError}</Text>
+        </Box>
     </form>
 }

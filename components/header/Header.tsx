@@ -4,6 +4,10 @@ import { useRouter } from 'next/router'
 import {colors} from "../../styles/colors";
 import {SortType} from "../../types/SortType";
 import {GoBackLink} from "../goBackLink/GoBackLink";
+import {vote} from "../../helpers/feedbackHelper";
+import {getAllFeedbacksData} from "../../features/feedbackSlice";
+import {getFromLocalStorage} from "../../services/localstorageService";
+import {FEEDBACK_USER_KEY} from "../../services/authService";
 
 interface HeaderProps {
     title: string;
@@ -16,16 +20,19 @@ interface HeaderProps {
 export const Header = (props: HeaderProps) => {
     const router = useRouter();
 
-    const goBack = () => router.back();
-
     const handleSort = (s: SortType) => {
         if (props.onSort) {
             props.onSort(s);
         }
     }
 
-    const handleAddFeedback = () => {
-        router.push('/feedback/create');
+    const handleAddFeedback = async () => {
+        const author: string = getFromLocalStorage(FEEDBACK_USER_KEY);
+        if (author) {
+            await router.push('/feedback/create');
+        } else {
+            await router.push("/login");
+        }
     }
 
     return (

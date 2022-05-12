@@ -7,6 +7,9 @@ import {useAppDispatch, useAppSelector} from "../hooks/reduxHooks";
 import {getAllFeedbacksData, selectFeedbackList, selectRoadmap} from "../features/feedbackSlice";
 import {VoteState} from "../components/feedback/vote/Vote";
 import {vote} from "../helpers/feedbackHelper";
+import {getFromLocalStorage} from "../services/localstorageService";
+import {useRouter} from "next/router";
+import {FEEDBACK_USER_KEY} from "../services/authService";
 
 export interface FeedbackMapType {
     name: StatusEnum,
@@ -15,6 +18,7 @@ export interface FeedbackMapType {
 }
 
 const Roadmap = () => {
+    const router = useRouter();
     const dispatch = useAppDispatch();
     const feedbackList: FeedbackType[] = useAppSelector(selectFeedbackList);
     const roadmap: RoadmapType[] = useAppSelector(selectRoadmap);
@@ -57,10 +61,13 @@ const Roadmap = () => {
     }, [feedbackList,roadmap])
 
     const handleVote = async (v: VoteState, roadmapCard: FeedbackType) => {
-        // TODO get current user
-        const authorId = "9dd1a809-5bce-401e-accb-07b7f6808c11";
-        await vote(v, roadmapCard, authorId);
-        dispatch(getAllFeedbacksData());
+        const author: string = getFromLocalStorage(FEEDBACK_USER_KEY);
+        if (author){
+            await vote(v, roadmapCard, author);
+            dispatch(getAllFeedbacksData());
+        } else {
+            await router.push("/login");
+        }
     }
 
     return <Box p={{ base: 0, md: '1.5rem' }}>

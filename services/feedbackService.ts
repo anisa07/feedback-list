@@ -7,7 +7,7 @@ import {
 } from "../types/FeedbackType";
 import {CommentDto, FeedbackDto} from "../types/DtoTypes";
 
-const urlApi = 'http://localhost:3001'
+export const urlApi = 'http://localhost:3001'
 
 export const getFeedbacks = (): Promise<FeedbackDto[]> => fetch(`${urlApi}/feedbacks`)
     .then((response) => response.json());

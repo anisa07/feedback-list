@@ -1,5 +1,5 @@
-import {GetServerSideProps, NextPage} from "next";
-import {getFeedback, saveComment, saveFeedback} from "../../services/feedbackService";
+import {NextPage} from "next";
+import {saveComment, saveFeedback} from "../../services/feedbackService";
 import {CommentType, FeedbackType} from "../../types/FeedbackType";
 import {Box, Button, Flex} from "@chakra-ui/react";
 import {colors} from "../../styles/colors";
@@ -9,11 +9,12 @@ import {CommentsList} from "../../components/feedback/commentsList/CommentsList"
 import {AddComment} from "../../components/feedback/addComment/AddComment";
 import {useEffect, useRef, useState} from "react";
 import {useRouter} from "next/router";
-import {useSelector} from "react-redux";
 import {useAppDispatch, useAppSelector} from "../../hooks/reduxHooks";
 import {getSelectedFeedbackData, selectFeedbackById} from "../../features/feedbackSlice";
 import {VoteState} from "../../components/feedback/vote/Vote";
 import {vote} from "../../helpers/feedbackHelper";
+import {getFromLocalStorage} from "../../services/localstorageService";
+import {FEEDBACK_USER_KEY} from "../../services/authService";
 
 export interface FeedbackProps {
     feedbackId: string
@@ -45,9 +46,9 @@ const FeedbackInDetails: NextPage<FeedbackProps> = () => {
     }
 
     const handleSubmitComment = async (newComment: CommentType) => {
-        // TODO fix authorID
+        const author: string = getFromLocalStorage(FEEDBACK_USER_KEY);
         const commentId = await saveComment({
-            authorId: "9dd1a809-5bce-401e-accb-07b7f6808c11",
+            authorId: author,
             text: newComment.comment,
             id: "",
             feedbackId: router.query?.id as string
@@ -57,9 +58,8 @@ const FeedbackInDetails: NextPage<FeedbackProps> = () => {
     }
 
     const handleVote = async (v: VoteState, feedback: FeedbackType) => {
-        // TODO get current user
-        const authorId = "9dd1a809-5bce-401e-accb-07b7f6808c11";
-        await vote(v, feedback, authorId);
+        const author: string = getFromLocalStorage(FEEDBACK_USER_KEY);
+        await vote(v, feedback, author);
         dispatch(getSelectedFeedbackData(router.query.id as string));
     }
 

@@ -1,4 +1,4 @@
-import {FeedbackType, StatusEnum, CategoryType} from "../../types/FeedbackType";
+import {FeedbackType, StatusEnum, CategoryType, UserType} from "../../types/FeedbackType";
 import {Flex, Button, Heading} from "@chakra-ui/react";
 import { v4 as uuidv4 } from 'uuid';
 import {colors} from "../../styles/colors";
@@ -13,6 +13,8 @@ import {getTypes, saveFeedback, saveType} from "../../services/feedbackService";
 import { CreatableField } from "../formFields/CreatableField";
 import {InputActionMeta} from "react-select";
 import {UUID_REGEX} from "../../helpers/regexRules";
+import {getFromLocalStorage} from "../../services/localstorageService";
+import {FEEDBACK_USER_KEY} from "../../services/authService";
 
 interface FeedbackFormProps {
     feedback?: FeedbackType,
@@ -81,6 +83,10 @@ export const FeedbackForm = (props: FeedbackFormProps) => {
     const goBack = () => router.back();
 
     const handleSaveFeedback = async () => {
+        const author: UserType = getFromLocalStorage(FEEDBACK_USER_KEY);
+        if (!author) {
+            router.push("/login");
+        }
         const feedbackToSave: FeedbackType = {
             id: props.feedback?.id || "",
             title: form.title.value,
@@ -89,13 +95,7 @@ export const FeedbackForm = (props: FeedbackFormProps) => {
                 voteDown: [],
                 voteUp: []
             },
-            // TODO get actual author; implement
-            author: {
-                "id": "9dd1a809-5bce-401e-accb-07b7f6808c11",
-                "name": "",
-                "email": "",
-                "img": "",
-            },
+            author,
             comments: props.feedback?.comments || [],
             type: {
                 id: form.category.value,

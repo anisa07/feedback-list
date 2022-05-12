@@ -20,6 +20,7 @@ export interface UserType {
     name: string,
     email: string,
     img: string,
+    password: any
 }
 
 export interface CommentType {
