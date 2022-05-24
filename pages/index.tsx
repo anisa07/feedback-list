@@ -63,13 +63,12 @@ const Home = () => {
         const newFilters = prepareFilters(id);
         setFilters(newFilters);
         if (newFilters[0].id === id) {
-            getAllFeedbacks().then(feedbacks => {
+            setSortedFeedbacks(sortBy(feedbackList, selectedType));
+        } else {
+            getFeedbackListByType(id).then(feedbacks => {
                 setSortedFeedbacks(sortBy(feedbacks, selectedType));
             })
         }
-        getFeedbackListByType(id).then(feedbacks => {
-            setSortedFeedbacks(sortBy(feedbacks, selectedType));
-        })
     }
 
     const handleSort = (s: SortType) => {

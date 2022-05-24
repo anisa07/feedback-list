@@ -2,7 +2,7 @@
   "feedbacks": [
     {
       "id": "84e5b8f2-fad0-45a3-846c-f2fad01e47a0",
-      "statusId": "1dbe369d-c9f2-4257-8edf-56cdc9507580",
+      "statusId": "7f91cda5-2442-4e7a-b58f-f154681c34b3",
       "title": "Add tags for solutions",
       "detail": "Easier to search for solutions based on a specific stack",
       "vote": {
@@ -11,25 +11,28 @@
         ],
         "voteUp": [
           "8d0e5ed5-f796-49bb-a738-1043ad22b4a7",
-          "9dd1a809-5bce-401e-accb-07b7f6808c11"
+          "9dd1a809-5bce-401e-accb-07b7f6808c11",
+          "69b09a6f-2299-4b38-85ac-8fe8e46467b9"
         ]
       },
       "commentIds": [
         "730eacef-3652-4857-b9f4-efe481a90763",
         "784bc396-6ee3-4325-8ea3-eb28da402893",
         "2e3d28ec-1b14-4369-835e-5a7137994b2c",
-        "4c612f20-aa36-4255-8727-f4a6bdc060c0"
+        "4c612f20-aa36-4255-8727-f4a6bdc060c0",
+        "285155ce-8161-441a-ba61-7a196918e1a6"
       ],
-      "typeId": "24dd9ff9-2f4f-40cb-84f8-d1bb13dca019",
-      "authorId": "9dd1a809-5bce-401e-accb-07b7f6808c11"
+      "typeId": "04fc49f4-ca4a-40db-a2b1-db6c949cd7bd"
     },
     {
       "id": "147940d2-3e6f-40d6-844c-018bc31735b0",
-      "statusId": "1dbe369d-c9f2-4257-8edf-56cdc9507580",
+      "statusId": "7f91cda5-2442-4e7a-b58f-f154681c34b3",
       "title": "Why do we use it?",
       "detail": "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. ",
       "vote": {
-        "voteDown": [],
+        "voteDown": [
+          "69b09a6f-2299-4b38-85ac-8fe8e46467b9"
+        ],
         "voteUp": [
           "9dd1a809-5bce-401e-accb-07b7f6808c11"
         ]
@@ -37,12 +40,12 @@
       "commentIds": [
         "bc5d1a8f-0bb8-478c-99a0-39eea7ba0752"
       ],
-      "typeId": "24dd9ff9-2f4f-40cb-84f8-d1bb13dca019",
+      "typeId": "0952603a-9c1c-4525-a381-53e4a9d93b22",
       "authorId": "9dd1a809-5bce-401e-accb-07b7f6808c11"
     },
     {
       "id": "5b0b9178-1cd9-4213-9810-e14b4c5e1868",
-      "statusId": "1dbe369d-c9f2-4257-8edf-56cdc9507580",
+      "statusId": "7f91cda5-2442-4e7a-b58f-f154681c34b3",
       "title": "Test feedback",
       "detail": "Test finished",
       "vote": {
@@ -52,99 +55,47 @@
         ]
       },
       "commentIds": [],
-      "typeId": "24dd9ff9-2f4f-40cb-84f8-d1bb13dca019",
+      "typeId": "0952603a-9c1c-4525-a381-53e4a9d93b22",
       "authorId": "9dd1a809-5bce-401e-accb-07b7f6808c11"
     }
   ],
   "statuses": [
     {
-      "id": "1dbe369d-c9f2-4257-8edf-56cdc9507580",
+      "id": "7f91cda5-2442-4e7a-b58f-f154681c34b3",
       "status": "Planned",
       "description": ""
     },
     {
-      "id": "5ccd4b70-7f5c-478e-bbaf-070da9f76092",
+      "id": "0143f5c1-fa86-46f1-986e-7f5de626a63e",
       "status": "InProgress",
       "description": ""
     },
     {
-      "id": "3a4f7ac0-32ee-44b0-b4cb-b558724fe184",
+      "id": "52324626-3506-422c-b1a9-a4dde51f6094",
       "status": "Live",
       "description": ""
     }
   ],
   "types": [
     {
-      "id": "89109355-c2ae-4395-88d3-bdf8d88d6fad",
+      "id": "e38711c9-ab1a-4aac-82a8-97299f18afbc",
       "type": "Enhancement"
     },
     {
-      "id": "7670a08b-23f8-4117-8c20-62162a4e18a2",
+      "id": "139d5006-d96f-41b7-9f8e-83f68d031814",
       "type": "Bug"
     },
     {
-      "id": "24dd9ff9-2f4f-40cb-84f8-d1bb13dca019",
+      "id": "0952603a-9c1c-4525-a381-53e4a9d93b22",
       "type": "Feature"
     },
     {
-      "id": "cc715f42-1c8f-42b8-b938-3fda2b7057fd",
+      "id": "7bb6dfdf-3ebc-4f32-94a2-f6c3e45e9244",
       "type": "UI"
     },
     {
-      "id": "753f6923-043d-4ca7-bc25-7c5c254a4352",
+      "id": "04fc49f4-ca4a-40db-a2b1-db6c949cd7bd",
       "type": "UX"
-    },
-    {
-      "id": "b0f677a2-e93f-42cd-9f38-9a39da250201",
-      "type": "test"
-    },
-    {
-      "id": "8488b059-915b-49c2-8afb-ca32ce4d8256",
-      "type": "rest"
-    },
-    {
-      "0": {
-        "id": "9dd1a809-5bce-401e-accb-07b7f6808c11",
-        "name": "Anna Joe",
-        "email": "anna@test.com",
-        "img": "https://images.unsplash.com/photo-1542596768-5d1d21f1cf98?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2787&q=80",
-        "password": "÷Òo#{Ð:"
-      },
-      "password": {},
-      "id": "DmA0rv2"
-    },
-    {
-      "0": {
-        "id": "9dd1a809-5bce-401e-accb-07b7f6808c11",
-        "name": "Anna Joe",
-        "email": "anna@test.com",
-        "img": "https://images.unsplash.com/photo-1542596768-5d1d21f1cf98?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2787&q=80",
-        "password": "Test1234"
-      },
-      "password": {},
-      "id": "Vh1l73x"
-    },
-    {
-      "0": {
-        "id": "9dd1a809-5bce-401e-accb-07b7f6808c11",
-        "name": "Anna Joe",
-        "email": "anna@test.com",
-        "img": "https://images.unsplash.com/photo-1542596768-5d1d21f1cf98?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2787&q=80",
-        "password": "Test1234"
-      },
-      "password": "yLAÁ»ü\u001f",
-      "id": "wzfRLvb"
-    },
-    {
-      "0": {
-        "id": "9dd1a809-5bce-401e-accb-07b7f6808c11",
-        "name": "Anna Joe",
-        "email": "anna@test.com",
-        "img": "https://images.unsplash.com/photo-1542596768-5d1d21f1cf98?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2787&q=80",
-        "password": "Test1234"
-      },
-      "password": "³§É`¹µJ",
-      "id": "DsULo6f"
     }
   ],
   "comments": [
@@ -176,6 +127,12 @@
       "authorId": "9dd1a809-5bce-401e-accb-07b7f6808c11",
       "text": "Test comment",
       "id": "4c612f20-aa36-4255-8727-f4a6bdc060c0",
+      "feedbackId": "84e5b8f2-fad0-45a3-846c-f2fad01e47a0"
+    },
+    {
+      "authorId": "92813172-c9e4-4087-8d82-b1f316101464",
+      "text": "Test comment",
+      "id": "285155ce-8161-441a-ba61-7a196918e1a6",
       "feedbackId": "84e5b8f2-fad0-45a3-846c-f2fad01e47a0"
     }
   ],
