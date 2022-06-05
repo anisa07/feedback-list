@@ -62,7 +62,6 @@ export const FeedbackForm = (props: FeedbackFormProps) => {
     }, [props.feedback]);
 
     const handleUpdateCategoryList = () => {
-        // TODO add return response types
         getTypes().then((types: CategoryType[]) => {
             const newCategories: Options[] = types.map(item => ({
                 value: item.id,
@@ -154,7 +153,7 @@ export const FeedbackForm = (props: FeedbackFormProps) => {
             onChange={onChange}
         />
         <CreatableField
-            defaultValue={props.feedback?.type.id || ""}
+            defaultValue={props.feedback?.type?.id || ""}
             label="Category"
             errorMessage={form.category.errorMessage}
             options={categories}

@@ -19,7 +19,7 @@ const EditFeedback: NextPage<FeedbackProps> = () => {
 
     useEffect(() => {
         if (router.query?.id) {
-            dispatch(getSelectedFeedbackData(router.query.id as string));
+            dispatch(getSelectedFeedbackData(router.query?.id as string));
         }
     }, [router.query])
 
