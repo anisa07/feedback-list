@@ -38,6 +38,10 @@ module.exports.signup = async (event, context, callback) => {
         });
         return callback(null, {
             statusCode: 200,
+            headers: {
+                'Access-Control-Allow-Origin': process.env.CLIENT,
+                'Access-Control-Allow-Credentials': true,
+            },
             body: JSON.stringify({
                 ...data, password: ""
             })
@@ -76,6 +80,10 @@ module.exports.login = async (event, context, callback) => {
                 );
                 callback(null, {
                     statusCode: 200,
+                    headers: {
+                        'Access-Control-Allow-Origin': process.env.CLIENT,
+                        'Access-Control-Allow-Credentials': true,
+                    },
                     body: JSON.stringify({
                         id: searchUser.id,
                         token
