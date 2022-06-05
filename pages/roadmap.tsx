@@ -1,15 +1,23 @@
 import {Header} from "../components/header/Header";
 import {Box, Flex, Tabs, TabList, TabPanels, Tab, TabPanel, Text} from "@chakra-ui/react";
-import {FeedbackType, RoadmapType, StatusEnum} from "../types/FeedbackType";
+import {FeedbackType, RoadmapType, StatusEnum, UserType} from "../types/FeedbackType";
 import {useEffect, useState} from "react";
 import {RoadmapCard} from "../components/roadmapView/roadmapCard/RoadmapCard";
 import {useAppDispatch, useAppSelector} from "../hooks/reduxHooks";
-import {getAllFeedbacksData, selectFeedbackList, selectRoadmap} from "../features/feedbackSlice";
+import {
+    getAllFeedbacksData,
+    selectFeedbackList,
+    selectFeedbackLoading,
+    selectRoadmap
+} from "../features/feedbackSlice";
 import {VoteState} from "../components/feedback/vote/Vote";
 import {vote} from "../helpers/feedbackHelper";
-import {getFromLocalStorage} from "../services/localstorageService";
+import {getFromSessionStorage} from "../services/storageService";
 import {useRouter} from "next/router";
 import {FEEDBACK_USER_KEY} from "../services/authService";
+import {Loading, LoadingSpinner} from "../components/loading/Loading";
+import {saveFeedback} from "../services/feedbackService";
+import {useErrorHandlerHook} from "../hooks/errorHandlerHook";
 
 export interface FeedbackMapType {
     name: StatusEnum,
@@ -20,8 +28,11 @@ export interface FeedbackMapType {
 const Roadmap = () => {
     const router = useRouter();
     const dispatch = useAppDispatch();
+    const {handleErrorByCode} = useErrorHandlerHook();
+    const loading: boolean = useAppSelector(selectFeedbackLoading);
     const feedbackList: FeedbackType[] = useAppSelector(selectFeedbackList);
     const roadmap: RoadmapType[] = useAppSelector(selectRoadmap);
+    const [loadingFeedback, setLoadingFeedback] = useState(false);
 
     useEffect(() => {
         dispatch(getAllFeedbacksData());
@@ -58,19 +69,30 @@ const Roadmap = () => {
             }
             setFeedbackMap(newFeedbackMap);
         }
-    }, [feedbackList,roadmap])
+    }, [feedbackList, roadmap])
 
     const handleVote = async (v: VoteState, roadmapCard: FeedbackType) => {
-        const author: string = getFromLocalStorage(FEEDBACK_USER_KEY);
-        if (author){
-            await vote(v, roadmapCard, author);
-            dispatch(getAllFeedbacksData());
+        const author: UserType = getFromSessionStorage(FEEDBACK_USER_KEY as string);
+        if (author) {
+            const copyOfFeedback = await vote(v, roadmapCard, author.id);
+            setLoadingFeedback(false);
+            if (copyOfFeedback) {
+                await saveFeedback(copyOfFeedback, handleErrorByCode, () => {
+                    dispatch(getAllFeedbacksData())
+                });
+                setLoadingFeedback(false);
+            }
         } else {
             await router.push("/login");
+            setLoadingFeedback(false);
         }
     }
 
-    return <Box p={{ base: 0, md: '1.5rem' }}>
+    if (loading) {
+        return <Loading/>
+    }
+
+    return <Box p={{base: 0, md: '1.5rem'}}>
         <Header
             showTitle={true}
             showNav={true}
@@ -92,7 +114,8 @@ const Roadmap = () => {
                 {Object.values(feedbackMap).map(feedbackItem => (
                     <TabPanel key={feedbackItem.name} flex="1">
                         {feedbackItem.feedbackList.map(feedback => (
-                            <RoadmapCard onVote={handleVote} key={feedback.id} roadmapCard={feedback} name={feedbackItem.name} />
+                            <RoadmapCard onVote={handleVote} key={feedback.id} roadmapCard={feedback}
+                                         name={feedbackItem.name}/>
                         ))}
                     </TabPanel>
                 ))}
@@ -112,16 +135,19 @@ const Roadmap = () => {
 
         <Flex
             display={{
-            base: "none",
-            md: "flex"
-        }}>
-            {Object.values(feedbackMap).map(feedbackItem => (
-                <Flex key={feedbackItem.name} flexDirection="column" flex="1" mt="0.5rem" mr="0.5rem">
-                    {feedbackItem.feedbackList.map(feedback => (
-                        <RoadmapCard onVote={handleVote} key={feedback.id} roadmapCard={feedback} name={feedbackItem.name} />
-                    ))}
-                </Flex>
-            ))}
+                base: "none",
+                md: "flex"
+            }}>
+            {loadingFeedback
+                ? <LoadingSpinner/>
+                : Object.values(feedbackMap).map(feedbackItem => (
+                    <Flex key={feedbackItem.name} flexDirection="column" flex="1" mt="0.5rem" mr="0.5rem">
+                        {feedbackItem.feedbackList.map(feedback => (
+                            <RoadmapCard onVote={handleVote} key={feedback.id} roadmapCard={feedback}
+                                         name={feedbackItem.name}/>
+                        ))}
+                    </Flex>
+                ))}
         </Flex>
     </Box>
 }

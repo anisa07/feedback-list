@@ -1,15 +1,15 @@
-import {Flex, Button, Heading, Text, Box} from "@chakra-ui/react";
+import {Flex, Button, Heading, Text, Box, Link} from "@chakra-ui/react";
 import {colors} from "../../styles/colors";
 import {TextField} from "../formFields/TextField";
 import {useRouter} from "next/router";
 import {useFormCustomHook} from "../../hooks/useFormHook";
 import {FormData} from "../../types/ValidationTypes";
 import {ensureNotEmpty} from "../../hooks/validationRules";
-import {useState} from "react";
-import {sendAuthData} from "../../services/authService";
+import {login} from "../../services/authService";
+import {useErrorHandlerHook} from "../../hooks/errorHandlerHook";
 
 export const LoginForm = () => {
-    const [loginError, setLoginError] = useState("");
+    const { handleErrorMessage } = useErrorHandlerHook();
     const formData: FormData = {
         email: {
             errorMessage: "",
@@ -31,14 +31,8 @@ export const LoginForm = () => {
     const goBack = () => router.back();
 
     const handleLogin = async () => {
-        setLoginError("");
-        try {
-            await sendAuthData({email: form.email.value, password: form.password.value});
-            goBack();
-        } catch (e: any) {
-            setLoginError(e.message);
-            console.error("Cannot Login")
-        }
+        await login({email: form.email.value, password: form.password.value}, handleErrorMessage);
+        goBack();
     };
 
     return <form>
@@ -60,14 +54,12 @@ export const LoginForm = () => {
             errorMessage={form.password.errorMessage}
             onChange={onChange}
         />
-        <Flex justifyContent="flex-end">
+        <Flex justifyContent="flex-end" alignItems="center">
+            <Link mr="0.5rem" href="/signup">Have no account yet?</Link>
             <Button disabled={!isValid()} color="white" backgroundColor={colors.fuchsia} size='md'
                     fontWeight="semibold" onClick={handleLogin}>
                 Login
             </Button>
         </Flex>
-        <Box>
-            <Text color="crimson">{loginError}</Text>
-        </Box>
     </form>
 }

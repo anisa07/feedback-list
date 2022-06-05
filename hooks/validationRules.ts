@@ -1,4 +1,4 @@
-import {ValidationArgs, ValidationResult} from "../types/ValidationTypes";
+import {FormData, ValidationArgs, ValidationResult} from "../types/ValidationTypes";
 import {EMAIL_W3C, MAX_LENGTH} from "../helpers/regexRules";
 
 function returnValidationResult(errorCondition: boolean, errorMessage: string): ValidationResult {
@@ -25,4 +25,8 @@ export function ensureMaxLength(value: ValidationArgs): ValidationResult {
 export function ensureEmail(value: ValidationArgs): ValidationResult {
     const isEmailFormat = (value as string).toLowerCase().match(EMAIL_W3C);
     return returnValidationResult(!isEmailFormat, 'Email is invalid');
+}
+
+export function ensurePasswordsAreEqual(value: ValidationArgs, form?: FormData): ValidationResult {
+    return returnValidationResult(value !== form?.password.value, 'Passwords are not equal');
 }

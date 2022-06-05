@@ -1,0 +1,102 @@
+console: true
+# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+# We've included some commented out config examples here.
+# Just uncomment any of them to get that config option.
+#
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+# Happy Coding!
+
+service: feedback-api
+
+org: aska03537
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  memorySize: 128
+  timeout: 10
+  stage: ${sls:stage}
+  region: eu-north-1
+
+functions:
+  signup:
+    handler: handlers/userHandler.signup
+    events:
+      - http:
+          path: user/signup
+          method: post
+          cors: true
+  login:
+    handler: handlers/userHandler.login
+    events:
+      - http:
+          path: user/login
+          method: post
+          cors: true
+  createType:
+    handler: handlers/feedbackHandler.createType
+    events:
+      - http:
+          path: feedback/type
+          method: post
+          cors: true
+  createStatus:
+    handler: handlers/feedbackHandler.createStatus
+    events:
+      - http:
+          path: feedback/status
+          method: post
+          cors: true
+  createFeedback:
+    handler: handlers/feedbackHandler.createFeedback
+    events:
+      - http:
+          path: feedback
+          method: post
+          cors: true
+  createComment:
+    handler: handlers/feedbackHandler.saveComment
+    events:
+      - http:
+          path: feedback/comment
+          method: post
+          cors: true
+  getRoadmap:
+    handler: handlers/feedbackHandler.getRoadmap
+    events:
+      - http:
+          path: feedback/roadmap
+          method: get
+          cors: true
+  getFeedbackList:
+    handler: handlers/feedbackHandler.getFeedbackList
+    events:
+      - http:
+          path: feedback/list
+          method: get
+          cors: true
+  getFeedback:
+    handler: handlers/feedbackHandler.getFeedback
+    events:
+      - http:
+          path: feedback/{id}
+          method: get
+          cors: true
+  getTypeList:
+    handler: handlers/feedbackHandler.getTypeList
+    events:
+      - http:
+          path: feedback/type/list
+          method: get
+          cors: true
+
+plugins:
+  - serverless-offline # adding the plugin to be able to run the offline emulation

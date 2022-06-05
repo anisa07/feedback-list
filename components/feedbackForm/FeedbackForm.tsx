@@ -13,8 +13,9 @@ import {getTypes, saveFeedback, saveType} from "../../services/feedbackService";
 import { CreatableField } from "../formFields/CreatableField";
 import {InputActionMeta} from "react-select";
 import {UUID_REGEX} from "../../helpers/regexRules";
-import {getFromLocalStorage} from "../../services/localstorageService";
+import {getFromSessionStorage} from "../../services/storageService";
 import {FEEDBACK_USER_KEY} from "../../services/authService";
+import {useErrorHandlerHook} from "../../hooks/errorHandlerHook";
 
 interface FeedbackFormProps {
     feedback?: FeedbackType,
@@ -26,6 +27,7 @@ export interface Options {
 }
 
 export const FeedbackForm = (props: FeedbackFormProps) => {
+    const { handleErrorByCode } = useErrorHandlerHook();
     const formData: FormData = {
         title: {
             errorMessage: "",
@@ -83,9 +85,9 @@ export const FeedbackForm = (props: FeedbackFormProps) => {
     const goBack = () => router.back();
 
     const handleSaveFeedback = async () => {
-        const author: UserType = getFromLocalStorage(FEEDBACK_USER_KEY);
+        const author: UserType = getFromSessionStorage(FEEDBACK_USER_KEY as string);
         if (!author) {
-            router.push("/login");
+            await router.push("/login");
         }
         const feedbackToSave: FeedbackType = {
             id: props.feedback?.id || "",
@@ -103,16 +105,10 @@ export const FeedbackForm = (props: FeedbackFormProps) => {
             },
             status: props.feedback?.status || {id: "", status: "" as StatusEnum}
         };
-        try {
-            await saveFeedback(feedbackToSave);
-            goBack();
-        } catch (e) {
-            // TODO implement behavior, notification?
-            console.error("Cannot save feedback")
-        }
+        await saveFeedback(feedbackToSave, handleErrorByCode, goBack);
     };
 
-    const handleChange = (v: string, actionMeta?: InputActionMeta) => {
+    const handleChange = async (v: string, actionMeta?: InputActionMeta) => {
         const event = {
             target: {
                 value: "",
@@ -135,16 +131,14 @@ export const FeedbackForm = (props: FeedbackFormProps) => {
         if (actionMeta?.action === "menu-close" && actionMeta.prevInputValue && !v) {
             const newType = actionMeta.prevInputValue;
             const id = uuidv4();
-            saveType({
+            await saveType({
                 id,
                 type: newType
-            }).then(() => {
+            }, handleErrorByCode, () => {
                 event.target.value = id;
                 onChange(event as unknown as ChangeEvent<HTMLInputElement>);
                 handleUpdateCategoryList();
-            }).catch(() => {
-                console.error("Cannot save type")
-            })
+            });
         }
     }
 

@@ -6,7 +6,7 @@ export interface ValidationResult {
 export type ValidationArgs = string | number | boolean | Date;
 
 export interface FormValidationFunction {
-    (value: ValidationArgs): ValidationResult;
+    (value: ValidationArgs, form?: FormData): ValidationResult;
 }
 
 export interface FormDataElement {

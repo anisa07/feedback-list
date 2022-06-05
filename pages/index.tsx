@@ -5,29 +5,40 @@ import {RoadmapPreview} from "../components/feedbackList/roadmapPreview/RoadmapP
 import {Header} from "../components/header/Header";
 import {FeedbackList} from "../components/feedbackList/FeedbackList";
 import {CategoryType, FeedbackType, RoadmapType} from "../types/FeedbackType";
-import {getAllFeedbacks, getFeedbackListByType, saveFeedback,} from "../services/feedbackService";
+import {getFeedbacksByTypeId, saveFeedback} from "../services/feedbackService";
 import {useEffect, useState} from "react";
 import {FilterType} from "../types/FilterType";
 import {SortType} from "../types/SortType";
 import {sortBy, vote} from "../helpers/feedbackHelper";
 import {breakpoints} from "../styles/screenSizes";
 import {useAppDispatch, useAppSelector} from "../hooks/reduxHooks";
-import {getAllFeedbacksData, selectFeedbackList, selectRoadmap, selectTypes} from "../features/feedbackSlice";
+import {
+    getAllFeedbacksData,
+    selectFeedbackList,
+    selectFeedbackLoading,
+    selectRoadmap,
+    selectTypes
+} from "../features/feedbackSlice";
 import {VoteState} from "../components/feedback/vote/Vote";
-import {getFromLocalStorage} from "../services/localstorageService";
+import {getFromSessionStorage} from "../services/storageService";
 import {useRouter} from "next/router";
 import {FEEDBACK_USER_KEY} from "../services/authService";
+import {Loading, LoadingSpinner} from "../components/loading/Loading";
+import {useErrorHandlerHook} from "../hooks/errorHandlerHook";
 
 const Home = () => {
     const router = useRouter();
     const dispatch = useAppDispatch();
+    const { handleErrorByCode } = useErrorHandlerHook();
     const feedbackList: FeedbackType[] = useAppSelector(selectFeedbackList);
     const roadmap: RoadmapType[] = useAppSelector(selectRoadmap);
     const types: CategoryType[] = useAppSelector(selectTypes);
+    const loading: boolean = useAppSelector(selectFeedbackLoading);
     const [isLargerThanMd] = useMediaQuery(`(min-width: ${breakpoints.md})`);
 
     const [filters, setFilters] = useState<FilterType[]>([]);
     const [sortedFeedbacks, setSortedFeedbacks] = useState<FeedbackType[]>([]);
+    const [loadingFeedback, setLoadingFeedback] = useState(false);
     const [selectedType, setSelectedType] = useState<SortType>("" as SortType);
 
     useEffect(() => {
@@ -60,13 +71,17 @@ const Home = () => {
     }
 
     const handleFilter = (id: string) => {
+        setLoadingFeedback(true);
         const newFilters = prepareFilters(id);
         setFilters(newFilters);
         if (newFilters[0].id === id) {
             setSortedFeedbacks(sortBy(feedbackList, selectedType));
+            setLoadingFeedback(false);
         } else {
-            getFeedbackListByType(id).then(feedbacks => {
+            getFeedbacksByTypeId(id).then(feedbacks => {
                 setSortedFeedbacks(sortBy(feedbacks, selectedType));
+            }).finally(() => {
+                setLoadingFeedback(false);
             })
         }
     }
@@ -77,13 +92,23 @@ const Home = () => {
     }
 
     const handleVote = async (v: VoteState, feedback: FeedbackType) => {
-        const author: string = getFromLocalStorage(FEEDBACK_USER_KEY);
+        const author: {id: string, token: string} = getFromSessionStorage(FEEDBACK_USER_KEY as string);
+        setLoadingFeedback(true);
         if (author) {
-            await vote(v, feedback, author);
-            dispatch(getAllFeedbacksData());
+            const copyOfFeedback = vote(v, feedback, author.id);
+            setLoadingFeedback(false);
+            if (copyOfFeedback) {
+                await saveFeedback(copyOfFeedback, handleErrorByCode,() => {dispatch(getAllFeedbacksData())});
+                setLoadingFeedback(false);
+            }
         } else {
-            await router.push("/login");
+            await router.push("/login", );
+            setLoadingFeedback(false);
         }
+    }
+
+    if (loading) {
+        return <Loading />
     }
 
     return (
@@ -110,7 +135,9 @@ const Home = () => {
                     showSort={true}
                     title={`${sortedFeedbacks ? sortedFeedbacks.length : 0} Suggestions`}
                     onSort={handleSort} />
-                <FeedbackList onVote={handleVote} feedbackList={sortedFeedbacks} />
+                { loadingFeedback
+                    ? <LoadingSpinner />
+                    : <FeedbackList onVote={handleVote} feedbackList={sortedFeedbacks}/> }
             </Box>
         </Flex>
     )

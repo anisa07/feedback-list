@@ -42,7 +42,7 @@ export const sortBy = (feedbackList: FeedbackType[], s?: SortType) => {
     }
 }
 
-export const vote = async (v: VoteState, feedback: FeedbackType, authorId: string) => {
+export const vote = (v: VoteState, feedback: FeedbackType, authorId: string) => {
     let voteTo: string[] = [];
     let voteFrom: string[] = [];
     const copyFeedback = {...feedback};
@@ -77,5 +77,5 @@ export const vote = async (v: VoteState, feedback: FeedbackType, authorId: strin
             voteUp: [...voteTo]
         }
     }
-    await saveFeedback(copyFeedback);
+    return copyFeedback;
 }

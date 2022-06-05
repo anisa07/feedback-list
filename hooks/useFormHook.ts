@@ -7,7 +7,7 @@ export function useFormCustomHook(formData: FormData) {
 
     const validateFunc = (inputField: FormDataElement): ValidationResult => {
         for (const validate of inputField.validation) {
-            const validationResult = validate(inputField.value);
+            const validationResult = validate(inputField.value, form);
             if (validationResult.error) {
                 return validationResult;
             }

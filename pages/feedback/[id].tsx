@@ -1,6 +1,6 @@
 import {NextPage} from "next";
 import {saveComment, saveFeedback} from "../../services/feedbackService";
-import {CommentType, FeedbackType} from "../../types/FeedbackType";
+import {CommentType, FeedbackType, UserType} from "../../types/FeedbackType";
 import {Box, Button, Flex} from "@chakra-ui/react";
 import {colors} from "../../styles/colors";
 import {GoBackLink} from "../../components/goBackLink/GoBackLink";
@@ -10,20 +10,29 @@ import {AddComment} from "../../components/feedback/addComment/AddComment";
 import {useEffect, useRef, useState} from "react";
 import {useRouter} from "next/router";
 import {useAppDispatch, useAppSelector} from "../../hooks/reduxHooks";
-import {getSelectedFeedbackData, selectFeedbackById} from "../../features/feedbackSlice";
+import {
+    getSelectedFeedbackData,
+    selectFeedbackById,
+    selectFeedbackLoading
+} from "../../features/feedbackSlice";
 import {VoteState} from "../../components/feedback/vote/Vote";
 import {vote} from "../../helpers/feedbackHelper";
-import {getFromLocalStorage} from "../../services/localstorageService";
+import {getFromSessionStorage} from "../../services/storageService";
 import {FEEDBACK_USER_KEY} from "../../services/authService";
+import {Loading, LoadingSpinner} from "../../components/loading/Loading";
+import {useErrorHandlerHook} from "../../hooks/errorHandlerHook";
 
 export interface FeedbackProps {
     feedbackId: string
 }
 
 const FeedbackInDetails: NextPage<FeedbackProps> = () => {
-    const router = useRouter()
+    const router = useRouter();
+    const { handleErrorByCode } = useErrorHandlerHook();
     const [commentTo, setCommentTo] = useState("");
+    const [loadingFeedback, setLoadingFeedback] = useState(false);
     const dispatch = useAppDispatch();
+    const loading: boolean = useAppSelector(selectFeedbackLoading);
     const feedback: FeedbackType = useAppSelector(selectFeedbackById);
 
     useEffect(() => {
@@ -46,21 +55,33 @@ const FeedbackInDetails: NextPage<FeedbackProps> = () => {
     }
 
     const handleSubmitComment = async (newComment: CommentType) => {
-        const author: string = getFromLocalStorage(FEEDBACK_USER_KEY);
-        const commentId = await saveComment({
-            authorId: author,
+        const author: UserType = getFromSessionStorage(FEEDBACK_USER_KEY as string);
+        await saveComment({
+            authorId: author.id,
             text: newComment.comment,
             id: "",
             feedbackId: router.query?.id as string
-        });
-        await saveFeedback({...feedback, comments: [...feedback.comments, {id: commentId } as CommentType]});
-        dispatch(getSelectedFeedbackData(router.query.id as string));
+        }, handleErrorByCode);
     }
 
     const handleVote = async (v: VoteState, feedback: FeedbackType) => {
-        const author: string = getFromLocalStorage(FEEDBACK_USER_KEY);
-        await vote(v, feedback, author);
-        dispatch(getSelectedFeedbackData(router.query.id as string));
+        const author: UserType = getFromSessionStorage(FEEDBACK_USER_KEY as string);
+        if (author) {
+            const copyOfFeedback = await vote(v, feedback, author.id);
+            setLoadingFeedback(false);
+            if (copyOfFeedback) {
+                await saveFeedback(copyOfFeedback, handleErrorByCode,() => {dispatch(getSelectedFeedbackData(router.query.id as string))});
+                setCommentTo("");
+                setLoadingFeedback(false);
+            }
+        } else {
+            await router.push("/login");
+            setLoadingFeedback(false);
+        }
+    }
+
+    if (loading) {
+        return <Loading />
     }
 
     return <Box p={{base: '1rem', md: '3rem', lg: '5re m 7.5rem'}}>
@@ -71,8 +92,12 @@ const FeedbackInDetails: NextPage<FeedbackProps> = () => {
                 Edit Feedback
             </Button>
         </Flex>
-        <Feedback onVote={handleVote} feedback={feedback} />
-        <CommentsList onReply={handleReplyComment} comments={ feedback.comments} />
+        { loadingFeedback
+            ? <LoadingSpinner />
+            : <>
+                <Feedback onVote={handleVote} feedback={feedback} />
+                <CommentsList onReply={handleReplyComment} comments={ feedback.comments} />
+            </> }
         <AddComment sendTo={commentTo} onSubmitComment={handleSubmitComment} commentRef={commentRef} />
     </Box>
 }

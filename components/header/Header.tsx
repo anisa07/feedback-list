@@ -1,12 +1,10 @@
 import {SortFeedback} from "../feedbackList/sortFeedback/SortFeedback";
-import {Box, Button, Flex, Heading, Link} from "@chakra-ui/react";
+import {Box, Button, Flex, Heading} from "@chakra-ui/react";
 import { useRouter } from 'next/router'
 import {colors} from "../../styles/colors";
 import {SortType} from "../../types/SortType";
 import {GoBackLink} from "../goBackLink/GoBackLink";
-import {vote} from "../../helpers/feedbackHelper";
-import {getAllFeedbacksData} from "../../features/feedbackSlice";
-import {getFromLocalStorage} from "../../services/localstorageService";
+import {getFromSessionStorage} from "../../services/storageService";
 import {FEEDBACK_USER_KEY} from "../../services/authService";
 
 interface HeaderProps {
@@ -27,7 +25,7 @@ export const Header = (props: HeaderProps) => {
     }
 
     const handleAddFeedback = async () => {
-        const author: string = getFromLocalStorage(FEEDBACK_USER_KEY);
+        const author: string = getFromSessionStorage(FEEDBACK_USER_KEY as string);
         if (author) {
             await router.push('/feedback/create');
         } else {

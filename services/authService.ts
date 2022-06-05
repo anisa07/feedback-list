@@ -1,28 +1,55 @@
-import {UserType} from "../types/FeedbackType";
-import {urlApi} from "./feedbackService";
-import {saveToLocalStorage} from "./localstorageService";
+import {URL_API} from "./feedbackService";
+import {saveToSessionStorage} from "./storageService";
 
 interface LoginDataDto {
     email: string,
     password: string
 }
 
-export const FEEDBACK_USER_KEY = "__feedback_user_key"
+interface SignupDataDto {
+    email: string,
+    name: string,
+    password: string,
+    img?: string
+}
 
-export const getUserByEmail = (email: string): Promise<UserType[]> => fetch(`${urlApi}/users/?email=${email}`)
-    .then((response) => response.json());
+export const FEEDBACK_USER_KEY = process.env.FEEDBACK_USER_KEY;
 
-export const sendAuthData = async ({email, password}: LoginDataDto) => {
-    const userFromDb = await getUserByEmail(email);
+export const signup = async (data: SignupDataDto, handleError: (msg: string) => void) => {
+    const signupResult = await fetch(`${URL_API}/user/signup`, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    });
+    switch (signupResult.status) {
+        case 400:
+            handleError("User already exists or data is incorrect");
+    }
+}
 
-    if (!userFromDb) {
-        throw Error("User does not exist!");
+export const login = async (data: LoginDataDto, handleError: (msg: string) => void) => {
+    const loginResult = await fetch(`${URL_API}/user/login`, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    });
+
+    if (loginResult.ok) {
+        const json = await loginResult.json();
+        saveToSessionStorage(FEEDBACK_USER_KEY as string, json);
+        return loginResult;
     }
 
-    // TODO fix encryption
-    if (password !== userFromDb[0].password) {
-        throw Error("Password is incorrect!");
+    switch (loginResult.status) {
+        case 400:
+            handleError("User already exists or data is incorrect");
+            break;
+        case 404:
+            handleError("User not found");
+            break;
     }
-
-    saveToLocalStorage(FEEDBACK_USER_KEY, userFromDb[0].id);
 }

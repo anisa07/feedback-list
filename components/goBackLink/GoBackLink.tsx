@@ -2,7 +2,8 @@ import {Link} from "@chakra-ui/react";
 import {useRouter} from "next/router";
 
 interface GoBackLinkProps {
-    color: string
+    color: string,
+    title?: string
 }
 
 export const GoBackLink = (props: GoBackLinkProps) => {
@@ -14,8 +15,8 @@ export const GoBackLink = (props: GoBackLinkProps) => {
         fontWeight="semibold"
         fontSize="12px"
         color={props.color}
-        mb='0.5rem'
+        mr='0.5rem'
         display="inline-block" onClick={goBack}>
-        {"<"} Go Back
+        {"<"} {props.title || " Go Back"}
     </Link>)
 }
