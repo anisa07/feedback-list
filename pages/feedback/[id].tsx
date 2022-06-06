@@ -56,12 +56,17 @@ const FeedbackInDetails: NextPage<FeedbackProps> = () => {
 
     const handleSubmitComment = async (newComment: CommentType) => {
         const author: UserType = getFromSessionStorage(FEEDBACK_USER_KEY as string);
-        await saveComment({
-            authorId: author.id,
-            text: newComment.comment,
-            id: "",
-            feedbackId: router.query?.id as string
-        }, handleErrorByCode);
+        if (author) {
+            await saveComment({
+                authorId: author.id,
+                text: newComment.comment,
+                id: "",
+                feedbackId: router.query?.id as string
+            }, handleErrorByCode);
+        } else {
+            await router.push("/login");
+            setLoadingFeedback(false);
+        }
     }
 
     const handleVote = async (v: VoteState, feedback: FeedbackType) => {
